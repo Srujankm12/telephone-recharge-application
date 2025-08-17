@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:telephone_recharge_application/core/theme/app_colors.dart';
+import 'package:telephone_recharge_application/features/options/presentation/widgets/options_big_card.dart';
+import 'package:telephone_recharge_application/features/options/presentation/widgets/options_grid_card.dart';
 
 class OptionsPage extends StatefulWidget {
   const OptionsPage({super.key});
@@ -13,11 +15,10 @@ class _OptionsPageState extends State<OptionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.bluetooth_connected_rounded),
         title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("VTELE009", style: Theme.of(context).textTheme.titleLarge),
+            Text("VTELE009", style: Theme.of(context).textTheme.titleMedium),
             Text(
               "89:07:67:54:75",
               style: Theme.of(
@@ -33,31 +34,7 @@ class _OptionsPageState extends State<OptionsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: 280,
-              child: Card(
-                elevation: 1,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.insert_link_rounded,
-                        size: 120,
-                        color: AppColors.blue,
-                      ),
-                      Text(
-                        "Initilize Card",
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            OptionsBigCard(),
             SizedBox(height: 10),
             GridView(
               physics: NeverScrollableScrollPhysics(),
@@ -68,86 +45,10 @@ class _OptionsPageState extends State<OptionsPage> {
                 mainAxisSpacing: 10,
               ),
               children: [
-                Card(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.currency_rupee_rounded,
-                          color: AppColors.blue,
-                          size: 50,
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          "Recharge",
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Card(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.devices_rounded,
-                          color: AppColors.blue,
-                          size: 50,
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          "Change Mode",
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Card(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.account_balance_rounded,
-                          color: AppColors.blue,
-                          size: 50,
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          "Balance",
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Card(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.history_rounded,
-                          color: AppColors.blue,
-                          size: 50,
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          "History",
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                OptionsGridCard(title: "Recharge", icon: Icons.currency_rupee_rounded,),
+                OptionsGridCard(title: "Mode", icon: Icons.devices_rounded),
+                OptionsGridCard(title: "Balance", icon: Icons.account_balance_rounded),
+                OptionsGridCard(title: "History", icon: Icons.history_rounded),
               ],
             ),
           ],

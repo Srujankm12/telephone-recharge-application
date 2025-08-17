@@ -34,5 +34,9 @@ class AppTheme {
         ),
       ),
     ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: AppColors.blue,
+      foregroundColor: AppColors.white,
+    )
   );
 }
