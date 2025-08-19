@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:telephone_recharge_application/core/theme/app_colors.dart';
 import 'package:telephone_recharge_application/features/recharge_history/presentation/widgets/recharge_history_card.dart';
 
 class RechargeHistoryPage extends StatefulWidget {

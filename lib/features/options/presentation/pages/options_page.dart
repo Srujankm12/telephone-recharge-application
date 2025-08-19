@@ -15,6 +15,7 @@ class _OptionsPageState extends State<OptionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

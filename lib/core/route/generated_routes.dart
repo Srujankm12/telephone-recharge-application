@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:telephone_recharge_application/features/balance/presentation/page/balance_page.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/pages/device_page.dart';
+import 'package:telephone_recharge_application/features/initilize/presentation/pages/card_mode_list_page.dart';
+import 'package:telephone_recharge_application/features/initilize/presentation/pages/restricted_mode_initilization_page.dart';
+import 'package:telephone_recharge_application/features/mode/presentation/page/change_mode_page.dart';
 import 'package:telephone_recharge_application/features/options/presentation/pages/options_page.dart';
 import 'package:telephone_recharge_application/features/recharge/presentation/page/recharge_page.dart';
 import 'package:telephone_recharge_application/features/recharge_history/presentation/page/recharge_history_page.dart';
@@ -14,6 +17,10 @@ class GeneratedRoutes {
     const String rechargeHistory = "/rechargeHistory";
     const String balance = "/balance";
     const String recharge = "/recharge";
+    const String changeMode = "/changeMode";
+    const String cardModeListPage = "/cardModeListPage";
+    const String restrictedModeInitilizationPage =
+        "/restrictedModeInitilizationPage";
     switch (settings.name) {
       case login:
         return MaterialPageRoute(builder: (context) => LoginPage());
@@ -27,6 +34,14 @@ class GeneratedRoutes {
         return MaterialPageRoute(builder: (context) => BalancePage());
       case recharge:
         return MaterialPageRoute(builder: (context) => RechargePage());
+      case changeMode:
+        return MaterialPageRoute(builder: (context) => ChangeModePage());
+      case cardModeListPage:
+        return MaterialPageRoute(builder: (context) => CardModeListPage());
+      case restrictedModeInitilizationPage:
+        return MaterialPageRoute(
+          builder: (context) => RestrictedModeInitilizationPage(),
+        );
       default:
         return null;
     }

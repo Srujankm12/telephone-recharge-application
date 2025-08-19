@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:telephone_recharge_application/core/theme/app_colors.dart';
-import 'package:telephone_recharge_application/core/widgets/app_elevated_button.dart';
 
 class BalancePage extends StatefulWidget {
   const BalancePage({super.key});
