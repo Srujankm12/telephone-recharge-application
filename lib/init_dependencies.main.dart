@@ -5,6 +5,7 @@ final serviceLocator = GetIt.instance;
 Future<void> init() async {
   await _initHive();
   await _initHttp();
+  await _requestBlePermissions();
   _initFlutterBluePlus();
 }
 
@@ -13,6 +14,18 @@ Future<void> _initHive() async {
   Hive.init(hiveDir.path);
   final Box<String> box = await Hive.openBox("credentials");
   serviceLocator.registerLazySingleton(() => box);
+}
+
+Future<void> _requestBlePermissions() async {
+  if (await Permission.bluetoothScan.isDenied) {
+    await Permission.bluetoothScan.request();
+  }
+  if (await Permission.bluetoothConnect.isDenied) {
+    await Permission.bluetoothConnect.request();
+  }
+  if (await Permission.location.isDenied) {
+    await Permission.location.request();
+  }
 }
 
 void _initFlutterBluePlus() {
