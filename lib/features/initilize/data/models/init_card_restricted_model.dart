@@ -3,7 +3,17 @@ import 'package:telephone_recharge_application/features/initilize/domain/entitie
 class InitCardRestrictedModel extends InitCardRestrictedEntity {
   InitCardRestrictedModel({
     required super.amount,
-    required super.phoneNumber,
+    required super.phoneNumbers,
     required super.signal,
+    required super.mode,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "signal": signal,
+      "mode": mode,
+      "amount": amount,
+      "phone_numbers": phoneNumbers,
+    };
+  }
 }

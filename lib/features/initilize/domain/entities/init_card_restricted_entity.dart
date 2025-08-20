@@ -1,11 +1,13 @@
 class InitCardRestrictedEntity {
   final String signal;
+  final String mode;
   final String amount;
-  final List<String> phoneNumber;
+  final List<String> phoneNumbers;
 
   InitCardRestrictedEntity({
     required this.amount,
-    required this.phoneNumber,
+    required this.phoneNumbers,
     required this.signal,
+    required this.mode,
   });
 }

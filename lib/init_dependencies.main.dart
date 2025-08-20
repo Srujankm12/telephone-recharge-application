@@ -6,7 +6,8 @@ Future<void> init() async {
   await _initHive();
   await _initHttp();
   await _requestBlePermissions();
-  _initFlutterBluePlus();
+  await _initInternetConnectivity();
+  _initBluetoothManager();
 }
 
 Future<void> _initHive() async {
@@ -28,12 +29,17 @@ Future<void> _requestBlePermissions() async {
   }
 }
 
-void _initFlutterBluePlus() {
-  final FlutterBluePlus bluetooth = FlutterBluePlus();
-  serviceLocator.registerLazySingleton(() => bluetooth);
+void _initBluetoothManager() {
+  final TelephoneBluetoothManager bluetoothManager = TelephoneBluetoothManager();
+  serviceLocator.registerLazySingleton(() => bluetoothManager);
 }
 
 Future<void> _initHttp() async {
   final http.Client client = http.Client();
   serviceLocator.registerLazySingleton(() => client);
+}
+
+Future<void> _initInternetConnectivity() async {
+  final InternetConnection connection = InternetConnection();
+  serviceLocator.registerLazySingleton(() => connection);
 }
