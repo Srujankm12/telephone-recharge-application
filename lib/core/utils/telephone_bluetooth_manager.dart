@@ -1,10 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class TelephoneBluetoothManager {
-  static final TelephoneBluetoothManager _instance =
-      TelephoneBluetoothManager._internal();
+  static final TelephoneBluetoothManager _instance = TelephoneBluetoothManager._internal();
 
   factory TelephoneBluetoothManager() {
     return _instance;
@@ -12,11 +12,7 @@ class TelephoneBluetoothManager {
 
   TelephoneBluetoothManager._internal();
 
-  final FlutterBluePlus _flutterBlue = FlutterBluePlus();
-
   BluetoothDevice? _connectedDevice;
-
-  FlutterBluePlus get flutterBlue => _flutterBlue;
 
   Future<void> startScan({
     Duration timeout = const Duration(seconds: 10),
@@ -25,7 +21,7 @@ class TelephoneBluetoothManager {
   }
 
   Stream<List<ScanResult>> scanResults() {
-    return FlutterBluePlus.onScanResults;
+    return FlutterBluePlus.scanResults;
   }
 
   Future<void> connectToDevice(BluetoothDevice device) async {
@@ -33,22 +29,72 @@ class TelephoneBluetoothManager {
     _connectedDevice = device;
   }
 
-  Future<BluetoothService> getTargetService(
-    Guid serviceUuid,
-  ) async {
-    List<BluetoothService> services = await _connectedDevice!.discoverServices();
+  Future<void> reconnectToDevice() async {
+    if (_connectedDevice == null) return;
+    var state = await _connectedDevice!.connectionState.first;
+    if (state != BluetoothConnectionState.connected) {
+      await _connectedDevice!.connect(autoConnect: true);
+    }
+  }
+
+  Stream<BluetoothConnectionState> connectionStatus() {
+    return _connectedDevice!.connectionState;
+  }
+
+  Future<BluetoothService> getTargetService(Guid serviceUuid) async {
+    List<BluetoothService> services = await _connectedDevice!
+        .discoverServices();
     return services.firstWhere((s) => s.uuid == serviceUuid);
   }
 
-  Future<void> writeToDevice(
-    BluetoothService service,
-    Guid charactristic,
-    dynamic payload,
-  ) async {
-    final characteristic = service.characteristics.firstWhere(
-      (c) => c.uuid == charactristic && c.properties.write,
-    );
-    List<int> data = utf8.encode(payload);
-    characteristic.write(data, withoutResponse: false);
+  Future<Map<String, dynamic>?> writeJsonAndWaitForResponse({
+    required BluetoothService service,
+    required Guid charUuid,
+    required Map<String, dynamic> payload,
+    Duration timeout = const Duration(seconds: 5),
+  }) async {
+    try {
+      // 1. Get the characteristic
+      final characteristic = service.characteristics.firstWhere(
+        (c) =>
+            c.uuid == charUuid && (c.properties.write || c.properties.notify),
+      );
+
+      // 2. Enable notifications
+      await characteristic.setNotifyValue(true);
+
+      // 3. Setup completer to wait for response
+      final completer = Completer<Map<String, dynamic>?>();
+
+      // 4. Listen for incoming notifications
+      final sub = characteristic.lastValueStream.listen((data) {
+        try {
+          final responseStr = utf8.decode(data);
+          final responseJson = jsonDecode(responseStr) as Map<String, dynamic>;
+          if (!completer.isCompleted) {
+            completer.complete(responseJson);
+          }
+        } catch (e) {
+          throw Exception({"message": "exception while getting response"});
+        }
+      });
+
+      // 5. Write JSON request
+      final dataToSend = utf8.encode(jsonEncode(payload));
+      await characteristic.write(dataToSend, withoutResponse: false);
+
+      // 6. Wait for response or timeout
+      final result = await completer.future.timeout(
+        timeout,
+        onTimeout: () => null,
+      );
+
+      // 7. Cleanup
+      await sub.cancel();
+
+      return result;
+    } catch (e) {
+      throw Exception({"message": "exception in BLE communication"});
+    }
   }
 }

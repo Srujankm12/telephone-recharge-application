@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:telephone_recharge_application/core/theme/app_colors.dart';
+import 'package:telephone_recharge_application/core/utils/telephone_bluetooth_manager.dart';
+import 'package:telephone_recharge_application/features/devices/presentation/widgets/device_list_tile.dart';
+import 'package:telephone_recharge_application/init_dependencies.dart';
 
 class DevicePage extends StatefulWidget {
   const DevicePage({super.key});
@@ -9,6 +12,12 @@ class DevicePage extends StatefulWidget {
 }
 
 class _DevicePageState extends State<DevicePage> {
+  @override
+  void initState() {
+    serviceLocator<TelephoneBluetoothManager>().startScan();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,38 +53,38 @@ class _DevicePageState extends State<DevicePage> {
           ],
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.refresh_rounded),
-          ),
+          IconButton(onPressed: () {}, icon: Icon(Icons.refresh_rounded)),
         ],
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          return ListTile(
-            leading: Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: AppColors.opacBlue,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(Icons.bluetooth_rounded, color: AppColors.white),
-            ),
-            title: Text(
-              "Vithsutra Bluetooth",
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            subtitle: Text(
-              "80:5C:9T:91:7D",
-              style: Theme.of(
-                context,
-              ).textTheme.labelMedium?.copyWith(color: AppColors.grey),
-            ),
-            onTap: () {},
+      body: StreamBuilder(
+        stream: serviceLocator<TelephoneBluetoothManager>().scanResults(),
+        builder: (context, asyncSnapshot) {
+          if (!asyncSnapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final devices = asyncSnapshot.data!
+              .where((result) => result.device.advName.contains("TEL"))
+              .toList();
+
+          if (devices.isEmpty) {
+            return const Center(child: Text("No devices found"));
+          }
+
+          return ListView.builder(
+            itemCount: devices.length,
+            itemBuilder: (context, index) {
+              final device = devices[index].device;
+              return DeviceListTile(
+                deviceName: device.advName,
+                deviceAddress: device.remoteId.toString(),
+                onPressed: () {
+                  
+                },
+              );
+            },
           );
         },
-        itemCount: 20,
       ),
     );
   }

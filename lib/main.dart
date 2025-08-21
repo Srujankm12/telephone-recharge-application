@@ -20,7 +20,7 @@ class TelephoneRechargeApplication extends StatelessWidget {
       theme: AppTheme.theme,
       darkTheme: AppTheme.theme,
       onGenerateRoute: GeneratedRoutes.onGenerate,
-      initialRoute: "/restrictedModeInitilizationPage",
+      initialRoute: "/devices",
     );
   }
 }
