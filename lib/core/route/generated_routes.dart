@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:telephone_recharge_application/features/balance/presentation/page/balance_page.dart';
+import 'package:telephone_recharge_application/features/devices/presentation/cubit/get_ble_devices_cubit.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/pages/device_page.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/pages/card_mode_list_page.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/pages/restricted_mode_initilization_page.dart';
@@ -7,6 +9,7 @@ import 'package:telephone_recharge_application/features/mode/presentation/page/c
 import 'package:telephone_recharge_application/features/options/presentation/pages/options_page.dart';
 import 'package:telephone_recharge_application/features/recharge/presentation/page/recharge_page.dart';
 import 'package:telephone_recharge_application/features/recharge_history/presentation/page/recharge_history_page.dart';
+import 'package:telephone_recharge_application/init_dependencies.dart';
 import '../../features/authentication/login/presentation/pages/login_page.dart';
 
 class GeneratedRoutes {
@@ -25,7 +28,12 @@ class GeneratedRoutes {
       case login:
         return MaterialPageRoute(builder: (context) => LoginPage());
       case devices:
-        return MaterialPageRoute(builder: (context) => DevicePage());
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => serviceLocator<GetBleDevicesCubit>(),
+            child: DevicePage(),
+          ),
+        );
       case options:
         return MaterialPageRoute(builder: (context) => OptionsPage());
       case rechargeHistory:

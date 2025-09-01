@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:telephone_recharge_application/core/theme/app_colors.dart';
 import 'package:telephone_recharge_application/core/utils/telephone_bluetooth_manager.dart';
+import 'package:telephone_recharge_application/features/devices/presentation/cubit/get_ble_devices_cubit.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/widgets/device_list_tile.dart';
 import 'package:telephone_recharge_application/init_dependencies.dart';
 
@@ -14,7 +16,7 @@ class DevicePage extends StatefulWidget {
 class _DevicePageState extends State<DevicePage> {
   @override
   void initState() {
-    serviceLocator<TelephoneBluetoothManager>().startScan();
+    BlocProvider.of<GetBleDevicesCubit>(context).getBleDevices();
     super.initState();
   }
 
@@ -56,34 +58,32 @@ class _DevicePageState extends State<DevicePage> {
           IconButton(onPressed: () {}, icon: Icon(Icons.refresh_rounded)),
         ],
       ),
-      body: StreamBuilder(
-        stream: serviceLocator<TelephoneBluetoothManager>().scanResults(),
-        builder: (context, asyncSnapshot) {
-          if (!asyncSnapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+      body: BlocBuilder<GetBleDevicesCubit, GetBleDevicesState>(
+        builder: (context, state) {
+          if (state is GetBleDevicesSuccessState) {
+            return StreamBuilder(
+              stream: state.devices,
+              builder: (context, asyncSnapshot) {
+                if (!asyncSnapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                final devices = asyncSnapshot.data;
+
+                return ListView.builder(
+                  itemCount: devices.,
+                  itemBuilder: (context, index) {
+                    final device = devices[index].device;
+                    return DeviceListTile(
+                      deviceName: device.advName,
+                      deviceAddress: device.remoteId.toString(),
+                      onPressed: () {},
+                    );
+                  },
+                );
+              },
+            );
           }
-
-          final devices = asyncSnapshot.data!
-              .where((result) => result.device.advName.contains("TEL"))
-              .toList();
-
-          if (devices.isEmpty) {
-            return const Center(child: Text("No devices found"));
-          }
-
-          return ListView.builder(
-            itemCount: devices.length,
-            itemBuilder: (context, index) {
-              final device = devices[index].device;
-              return DeviceListTile(
-                deviceName: device.advName,
-                deviceAddress: device.remoteId.toString(),
-                onPressed: () {
-                  
-                },
-              );
-            },
-          );
         },
       ),
     );

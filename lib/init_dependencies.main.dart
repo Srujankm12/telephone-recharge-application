@@ -8,6 +8,7 @@ Future<void> init() async {
   await _requestBlePermissions();
   await _initInternetConnectivity();
   _initBluetoothManager();
+  await _initDevicesListCubit();
 }
 
 Future<void> _initHive() async {
@@ -30,7 +31,8 @@ Future<void> _requestBlePermissions() async {
 }
 
 void _initBluetoothManager() {
-  final TelephoneBluetoothManager bluetoothManager = TelephoneBluetoothManager();
+  final TelephoneBluetoothManager bluetoothManager =
+      TelephoneBluetoothManager();
   serviceLocator.registerLazySingleton(() => bluetoothManager);
 }
 
@@ -42,4 +44,20 @@ Future<void> _initHttp() async {
 Future<void> _initInternetConnectivity() async {
   final InternetConnection connection = InternetConnection();
   serviceLocator.registerLazySingleton(() => connection);
+}
+
+Future<void> _initDevicesListCubit() async {
+  serviceLocator
+    ..registerLazySingleton<DevicesLocalDatasource>(
+      () => DevicesLocalDatasourceImpl(bluetoothManager: serviceLocator()),
+    )
+    ..registerLazySingleton<DevicesRepository>(
+      () => DevicesRepositoryImpl(devicesLocalDatasource: serviceLocator()),
+    )
+    ..registerLazySingleton<GetBleDevicesUsecase>(
+      () => GetBleDevicesUsecase(devicesRepository: serviceLocator()),
+    )
+    ..registerFactory<GetBleDevicesCubit>(
+      () => GetBleDevicesCubit(getBleDevicesUsecase: serviceLocator()),
+    );
 }

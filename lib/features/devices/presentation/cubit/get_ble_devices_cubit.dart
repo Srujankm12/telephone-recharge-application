@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:telephone_recharge_application/features/devices/domain/entities/ble_device_entity.dart';
 import 'package:telephone_recharge_application/features/devices/domain/usecases/get_ble_devices_usecase.dart';
 
 part 'get_ble_devices_state.dart';
@@ -11,9 +12,15 @@ class GetBleDevicesCubit extends Cubit<GetBleDevicesState> {
       super(GetBleDevicesInitial());
 
   Future<void> getBleDevices() async {
+    emit(GetBleDeviceLoadingState());
     final res = await _getBleDevicesUsecase(null);
-    res.fold((failure) {
-      emit();
-    }, (success) {});
+    res.fold(
+      (failure) {
+        emit(GetBleDevicesFailureState(message: failure.message));
+      },
+      (success) {
+        emit(GetBleDevicesSuccessState(devices: success));
+      },
+    );
   }
 }

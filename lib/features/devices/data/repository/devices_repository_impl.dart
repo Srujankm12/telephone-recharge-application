@@ -14,11 +14,9 @@ class DevicesRepositoryImpl implements DevicesRepository {
   Future<Either<Failure, Stream<BleDeviceEntity>>> getBleDevices() async {
     try {
       final deviceStream = devicesLocalDatasource.getBleDevices();
-
       final entityStream = deviceStream.map<BleDeviceEntity>(
         (device) => device,
       );
-
       return Right(entityStream);
     } on LocalException catch (e) {
       return Left(Failure(message: e.message));
