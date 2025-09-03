@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:telephone_recharge_application/core/theme/app_colors.dart';
+import 'package:telephone_recharge_application/core/widgets/app_loading_widget.dart';
 
 class DeviceListTile extends StatefulWidget {
   final String deviceName;
   final String deviceAddress;
   final VoidCallback onPressed;
+  final bool isLoading;
   const DeviceListTile({
     super.key,
     required this.deviceName,
     required this.deviceAddress,
     required this.onPressed,
+    this.isLoading = false,
   });
 
   @override
@@ -39,6 +42,17 @@ class _DeviceListTileState extends State<DeviceListTile> {
           context,
         ).textTheme.labelMedium?.copyWith(color: AppColors.grey),
       ),
+      trailing: widget.isLoading
+          ? SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                color: AppColors.blue,
+                strokeCap: StrokeCap.round,
+                strokeWidth: 2,
+              ),
+            )
+          : null,
       onTap: widget.onPressed,
     );
   }

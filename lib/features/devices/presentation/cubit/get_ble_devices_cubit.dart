@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:telephone_recharge_application/features/devices/domain/entities/ble_device_entity.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:telephone_recharge_application/features/devices/domain/usecases/get_ble_devices_usecase.dart';
 
 part 'get_ble_devices_state.dart';

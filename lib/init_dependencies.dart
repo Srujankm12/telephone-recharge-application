@@ -8,7 +8,9 @@ import 'package:telephone_recharge_application/core/utils/telephone_bluetooth_ma
 import 'package:telephone_recharge_application/features/devices/data/datasources/devices_local_datasource.dart';
 import 'package:telephone_recharge_application/features/devices/data/repository/devices_repository_impl.dart';
 import 'package:telephone_recharge_application/features/devices/domain/repository/devices_repository.dart';
+import 'package:telephone_recharge_application/features/devices/domain/usecases/connect_to_ble_device_usecase.dart';
 import 'package:telephone_recharge_application/features/devices/domain/usecases/get_ble_devices_usecase.dart';
+import 'package:telephone_recharge_application/features/devices/presentation/cubit/connect_to_ble_device_cubit.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/get_ble_devices_cubit.dart';
 
 part 'init_dependencies.main.dart';

@@ -6,7 +6,7 @@ sealed class GetBleDevicesState {}
 final class GetBleDevicesInitial extends GetBleDevicesState {}
 
 final class GetBleDevicesSuccessState extends GetBleDevicesState {
-  final Stream<BleDeviceEntity> devices;
+  final Stream<List<ScanResult>> devices;
   GetBleDevicesSuccessState({required this.devices});
 }
 
@@ -15,4 +15,4 @@ final class GetBleDevicesFailureState extends GetBleDevicesState {
   GetBleDevicesFailureState({required this.message});
 }
 
-final class GetBleDeviceLoadingState extends GetBleDevicesState{}
+final class GetBleDeviceLoadingState extends GetBleDevicesState {}

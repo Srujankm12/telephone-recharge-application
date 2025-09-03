@@ -1,9 +1,10 @@
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
 import 'package:telephone_recharge_application/core/utils/telephone_bluetooth_manager.dart';
-import 'package:telephone_recharge_application/features/devices/data/models/ble_device_model.dart';
 
 abstract interface class DevicesLocalDatasource {
-  Stream<BleDeviceModel> getBleDevices();
+  Future<Stream<List<ScanResult>>> getBleDevices();
+  Future<bool> connectToDevice({required BluetoothDevice device});
 }
 
 class DevicesLocalDatasourceImpl implements DevicesLocalDatasource {
@@ -12,16 +13,27 @@ class DevicesLocalDatasourceImpl implements DevicesLocalDatasource {
   DevicesLocalDatasourceImpl({required this.bluetoothManager});
 
   @override
-  Stream<BleDeviceModel> getBleDevices() async* {
+  Future<Stream<List<ScanResult>>> getBleDevices() async {
     try {
       await bluetoothManager.startScan();
-      await for (final deviceList in bluetoothManager.scanResults()) {
-        for (final device in deviceList) {
-          yield BleDeviceModel.fromResult(device);
-        }
-      }
+      return bluetoothManager.scanResults();
     } catch (_) {
       throw LocalException(message: "Error getting devices. Try again.");
+    }
+  }
+
+  @override
+  Future<bool> connectToDevice({required BluetoothDevice device}) async {
+    try {
+      await bluetoothManager.connectToDevice(device);
+      final status = await bluetoothManager.connectionStatus().firstWhere(
+        (s) =>
+            s == BluetoothConnectionState.connected ||
+            s == BluetoothConnectionState.disconnected,
+      );
+      return status == BluetoothConnectionState.connected;
+    } catch (e) {
+      return false;
     }
   }
 }

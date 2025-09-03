@@ -57,7 +57,14 @@ Future<void> _initDevicesListCubit() async {
     ..registerLazySingleton<GetBleDevicesUsecase>(
       () => GetBleDevicesUsecase(devicesRepository: serviceLocator()),
     )
+    ..registerLazySingleton<ConnectToBleDeviceUsecase>(
+      () => ConnectToBleDeviceUsecase(devicesRepository: serviceLocator()),
+    )
     ..registerFactory<GetBleDevicesCubit>(
       () => GetBleDevicesCubit(getBleDevicesUsecase: serviceLocator()),
+    )
+    ..registerFactory<ConnectToBleDeviceCubit>(
+      () =>
+          ConnectToBleDeviceCubit(connectToBleDeviceUsecase: serviceLocator()),
     );
 }
