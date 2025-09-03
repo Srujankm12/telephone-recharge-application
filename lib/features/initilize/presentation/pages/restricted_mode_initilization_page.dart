@@ -13,6 +13,31 @@ class RestrictedModeInitilizationPage extends StatefulWidget {
 
 class _RestrictedModeInitilizationPageState
     extends State<RestrictedModeInitilizationPage> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final List<String> phoneNumbers = [];
+
+  void _addPhoneNumberToList(String phoneNumber) {
+    setState(() {
+      phoneNumbers.add(phoneNumber);
+    });
+    _phoneNumberController.clear();
+  }
+
+  void _removePhoneNumberFromList(int index) {
+    setState(() {
+      phoneNumbers.removeAt(index);
+    });
+  }
+
+  @override
+  void dispose() {
+    _phoneNumberController.dispose();
+    _amountController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,92 +46,113 @@ class _RestrictedModeInitilizationPageState
         padding: const EdgeInsets.all(10),
         child: SingleChildScrollView(
           child: Center(
-            child: Column(
-              children: [
-                SizedBox(height: 10),
-                Text(
-                  "Enter the Details Below",
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                Text(
-                  "Your details below",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelLarge?.copyWith(color: AppColors.grey),
-                ),
-                SizedBox(height: 20),
-                AppTextField(
-                  hintText: "Amount",
-                  icon: Icons.currency_rupee_rounded,
-                ),
-                SizedBox(height: 20),
-                RestrictedPhoneNumberTextField(
-                  hintText: "Phone Number",
-                  leading: Icons.phone_rounded,
-                  onPressed: () {},
-                ),
-                SizedBox(height: 20),
-                Align(
-                  alignment: Alignment(-1, 0),
-                  child: Text(
-                    "Phone Numbers",
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  SizedBox(height: 10),
+                  Text(
+                    "Enter the Details Below",
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  Text(
+                    "Your details below",
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelLarge?.copyWith(color: AppColors.grey),
+                  ),
+                  SizedBox(height: 20),
+                  AppTextField(
+                    hintText: "Amount",
+                    icon: Icons.currency_rupee_rounded,
+                    controller: _amountController,
+                  ),
+                  SizedBox(height: 20),
+                  RestrictedPhoneNumberTextField(
+                    hintText: "Phone Number",
+                    leading: Icons.phone_rounded,
+                    onPressed: phoneNumbers.length != 3
+                        ? () {
+                            if (_formKey.currentState!.validate()) {
+                              _addPhoneNumberToList(
+                                _phoneNumberController.text,
+                              );
+                            }
+                          }
+                        : null,
+                    controller: _phoneNumberController,
+                    validator: (value) {
+                      if (value?.length != 10) {
+                        return "Enter a valid Phone Number";
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment(-1, 0),
+                    child: Text(
+                      "Phone Numbers",
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 10),
-                Align(
-                  alignment: Alignment(-1, 0),
-                  child: Wrap(
-                    children: List.generate(
-                      3,
-                      (index) => Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: AppColors.white,
-                            border: Border.all(color: AppColors.opacBlue),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "8618245446",
-                                  style: Theme.of(context).textTheme.labelLarge
-                                      ?.copyWith(fontWeight: FontWeight.w600),
-                                ),
-                                SizedBox(width: 4),
-                                InkWell(
-                                  onTap: () {
-                                    // TODO: Delete Element
-                                  },
-                                  child: Icon(
-                                    Icons.close_rounded,
-                                    color: AppColors.grey,
+                  SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment(-1, 0),
+                    child: Wrap(
+                      children: List.generate(
+                        phoneNumbers.length,
+                        (index) => Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: AppColors.white,
+                              border: Border.all(color: AppColors.opacBlue),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    phoneNumbers[index],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(fontWeight: FontWeight.w600),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(width: 4),
+                                  InkWell(
+                                    onTap: () {
+                                      _removePhoneNumberFromList(index);
+                                    },
+                                    child: Icon(
+                                      Icons.close_rounded,
+                                      color: AppColors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(height: 60),
-              ],
+                  SizedBox(height: 60),
+                ],
+              ),
             ),
           ),
         ),
       ),
       bottomSheet: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 20),
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: phoneNumbers.length == 3 ? () {} : null,
           style: ElevatedButton.styleFrom(
             elevation: 0,
             fixedSize: Size(MediaQuery.of(context).size.width, 50),

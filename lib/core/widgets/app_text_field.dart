@@ -6,12 +6,14 @@ class AppTextField extends StatefulWidget {
   final IconData icon;
   final bool isPasswordField;
   final String? Function(String?)? validator;
+  final TextEditingController controller;
   const AppTextField({
     super.key,
     required this.hintText,
     required this.icon,
     this.isPasswordField = false,
     this.validator,
+    required this.controller,
   });
 
   @override
@@ -23,6 +25,7 @@ class _AppTextFieldState extends State<AppTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: widget.controller,
       obscureText: isObscure,
       cursorColor: AppColors.grey,
       cursorHeight: 14,

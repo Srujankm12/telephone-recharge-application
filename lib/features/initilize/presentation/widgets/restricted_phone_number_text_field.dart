@@ -4,17 +4,24 @@ import 'package:telephone_recharge_application/core/theme/app_colors.dart';
 class RestrictedPhoneNumberTextField extends StatelessWidget {
   final String hintText;
   final IconData leading;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
+  final TextEditingController controller;
+  final String? Function(String?)? validator;
   const RestrictedPhoneNumberTextField({
     super.key,
     required this.hintText,
     required this.leading,
     required this.onPressed,
+    required this.controller,
+    required this.validator,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      validator: validator,
+      controller: controller,
+      maxLength: 10,
       keyboardType: TextInputType.number,
       autocorrect: true,
       cursorColor: AppColors.grey,
@@ -26,7 +33,9 @@ class RestrictedPhoneNumberTextField extends StatelessWidget {
         hintText: hintText,
         suffixIcon: IconButton(
           onPressed: onPressed,
-          icon: Icon(Icons.add_rounded, color: AppColors.blue),
+          icon: onPressed != null
+              ? Icon(Icons.add_rounded, color: AppColors.blue)
+              : Icon(Icons.add_rounded, color: AppColors.grey),
         ),
       ),
     );

@@ -7,7 +7,11 @@ final class ConnectToBleDeviceInitial extends ConnectToBleDeviceState {}
 
 final class ConnectToBleDeviceSuccessState extends ConnectToBleDeviceState {
   final bool connectionStatus;
-  ConnectToBleDeviceSuccessState({required this.connectionStatus});
+  final BluetoothDevice device;
+  ConnectToBleDeviceSuccessState({
+    required this.connectionStatus,
+    required this.device,
+  });
 }
 
 final class ConnectToBleDeviceFailureState extends ConnectToBleDeviceState {

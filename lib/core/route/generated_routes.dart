@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:telephone_recharge_application/core/arguments/options_page_args.dart';
 import 'package:telephone_recharge_application/features/balance/presentation/page/balance_page.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/connect_to_ble_device_cubit.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/get_ble_devices_cubit.dart';
@@ -25,6 +26,8 @@ class GeneratedRoutes {
     const String cardModeListPage = "/cardModeListPage";
     const String restrictedModeInitilizationPage =
         "/restrictedModeInitilizationPage";
+
+    final args = settings.arguments;
     switch (settings.name) {
       case login:
         return MaterialPageRoute(builder: (context) => LoginPage());
@@ -43,7 +46,11 @@ class GeneratedRoutes {
           ),
         );
       case options:
-        return MaterialPageRoute(builder: (context) => OptionsPage());
+        if (args is OptionsPageArgs) {
+          return MaterialPageRoute(
+            builder: (context) => OptionsPage(args: args),
+          );
+        }
       case rechargeHistory:
         return MaterialPageRoute(builder: (context) => RechargeHistoryPage());
       case balance:

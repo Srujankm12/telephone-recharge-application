@@ -20,7 +20,9 @@ class _CardModeListPageState extends State<CardModeListPage> {
             CardModeButton(
               title: "Restricted",
               icon: Icons.call_end_rounded,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, "/restrictedModeInitilizationPage");
+              },
             ),
             SizedBox(height: 40),
             CardModeButton(

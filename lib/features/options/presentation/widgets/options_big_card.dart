@@ -11,20 +11,26 @@ class OptionsBigCard extends StatelessWidget {
       height: 280,
       child: Card(
         elevation: 1,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.insert_link_rounded,
-                size: 80,
-                color: AppColors.blue,
-              ),
-              Text(
-                "Initilize Card",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ],
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: () {
+            Navigator.pushNamed(context, "/cardModeListPage");
+          },
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.insert_link_rounded,
+                  size: 80,
+                  color: AppColors.blue,
+                ),
+                Text(
+                  "Initilize Card",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ],
+            ),
           ),
         ),
       ),

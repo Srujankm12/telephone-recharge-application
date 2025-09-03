@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class TelephoneBluetoothManager {
-  static final TelephoneBluetoothManager _instance = TelephoneBluetoothManager._internal();
+  static final TelephoneBluetoothManager _instance =
+      TelephoneBluetoothManager._internal();
 
   factory TelephoneBluetoothManager() {
     return _instance;
@@ -35,6 +36,10 @@ class TelephoneBluetoothManager {
     if (state != BluetoothConnectionState.connected) {
       await _connectedDevice!.connect(autoConnect: true);
     }
+  }
+
+  Future<void> disconnectFromDevice() async {
+    await _connectedDevice?.disconnect();
   }
 
   Stream<BluetoothConnectionState> connectionStatus() {

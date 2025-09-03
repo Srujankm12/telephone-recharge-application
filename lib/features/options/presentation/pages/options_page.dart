@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:telephone_recharge_application/core/arguments/options_page_args.dart';
 import 'package:telephone_recharge_application/core/theme/app_colors.dart';
 import 'package:telephone_recharge_application/features/options/presentation/widgets/options_big_card.dart';
 import 'package:telephone_recharge_application/features/options/presentation/widgets/options_grid_card.dart';
 
 class OptionsPage extends StatefulWidget {
-  const OptionsPage({super.key});
+  final OptionsPageArgs args;
+  const OptionsPage({super.key, required this.args});
 
   @override
   State<OptionsPage> createState() => _OptionsPageState();
@@ -15,13 +17,22 @@ class _OptionsPageState extends State<OptionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         centerTitle: true,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("VTELE009", style: Theme.of(context).textTheme.titleMedium),
             Text(
-              "89:07:67:54:75",
+              widget.args.device.advName,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            Text(
+              widget.args.device.remoteId.toString(),
               style: Theme.of(
                 context,
               ).textTheme.labelMedium?.copyWith(color: AppColors.grey),
@@ -46,10 +57,34 @@ class _OptionsPageState extends State<OptionsPage> {
                 mainAxisSpacing: 10,
               ),
               children: [
-                OptionsGridCard(title: "Recharge", icon: Icons.currency_rupee_rounded,),
-                OptionsGridCard(title: "Mode", icon: Icons.devices_rounded),
-                OptionsGridCard(title: "Balance", icon: Icons.account_balance_rounded),
-                OptionsGridCard(title: "History", icon: Icons.history_rounded),
+                OptionsGridCard(
+                  title: "Recharge",
+                  icon: Icons.currency_rupee_rounded,
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/recharge");
+                  },
+                ),
+                OptionsGridCard(
+                  title: "Mode",
+                  icon: Icons.devices_rounded,
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/changeMode");
+                  },
+                ),
+                OptionsGridCard(
+                  title: "Balance",
+                  icon: Icons.account_balance_rounded,
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/balance");
+                  },
+                ),
+                OptionsGridCard(
+                  title: "History",
+                  icon: Icons.history_rounded,
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/rechargeHistory");
+                  },
+                ),
               ],
             ),
           ],

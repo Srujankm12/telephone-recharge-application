@@ -42,12 +42,17 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 10),
                 Image.asset(Images.loginPageImage, width: 280),
                 SizedBox(height: 10),
-                AppTextField(hintText: "username", icon: Icons.person),
+                AppTextField(
+                  hintText: "username",
+                  icon: Icons.person,
+                  controller: TextEditingController(),
+                ),
                 SizedBox(height: 20),
                 AppTextField(
                   hintText: "password",
                   icon: Icons.password,
                   isPasswordField: true,
+                  controller: TextEditingController(),
                 ),
                 SizedBox(height: 8),
                 Align(

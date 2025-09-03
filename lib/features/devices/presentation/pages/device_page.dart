@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:telephone_recharge_application/core/arguments/options_page_args.dart';
 import 'package:telephone_recharge_application/core/theme/app_colors.dart';
 import 'package:telephone_recharge_application/core/widgets/app_loading_widget.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/connect_to_ble_device_cubit.dart';
@@ -14,88 +16,110 @@ class DevicePage extends StatefulWidget {
 }
 
 class _DevicePageState extends State<DevicePage> {
+  bool _isScanning = true;
+  Timer? _scanTimer;
+
   @override
   void initState() {
-    BlocProvider.of<GetBleDevicesCubit>(context).getBleDevices();
     super.initState();
+    _startScan();
+  }
+
+  @override
+  void dispose() {
+    _scanTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startScan() {
+    setState(() => _isScanning = true);
+
+    // Cancel old timer if exists
+    _scanTimer?.cancel();
+
+    // Start 10s timer
+    _scanTimer = Timer(const Duration(seconds: 10), () {
+      if (mounted) {
+        setState(() => _isScanning = false);
+      }
+    });
+
+    // Trigger BLE scan
+    context.read<GetBleDevicesCubit>().getBleDevices();
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        elevation: 0,
+        content: Text(
+          message,
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(color: AppColors.white),
+        ),
+        backgroundColor: AppColors.blue,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<ConnectToBleDeviceCubit, ConnectToBleDeviceState>(
       listener: (context, state) {
-        if (state is ConnectToBleDeviceSuccessState &&
-            state.connectionStatus == true) {
-          Navigator.pushNamed(context, "/options");
-        }
-        if (state is ConnectToBleDeviceSuccessState &&
-            state.connectionStatus == false) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              elevation: 0,
-              content: Text(
-                "Failed to Connect.",
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(color: AppColors.white),
-              ),
-              backgroundColor: AppColors.blue,
-            ),
-          );
-        }
-        if (state is ConnectToBleDeviceFailureState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              elevation: 0,
-              content: Text(
-                state.message,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(color: AppColors.white),
-              ),
-              backgroundColor: AppColors.blue,
-            ),
-          );
+        if (state is ConnectToBleDeviceSuccessState) {
+          if (state.connectionStatus) {
+            Navigator.pushNamed(
+              context,
+              "/options",
+              arguments: OptionsPageArgs(device: state.device),
+            );
+          } else {
+            _showSnackBar(context, "Failed to Connect.");
+          }
+        } else if (state is ConnectToBleDeviceFailureState) {
+          _showSnackBar(context, state.message);
         }
       },
       child: Scaffold(
         appBar: AppBar(
           titleSpacing: 0,
-          leading: Icon(Icons.bluetooth_audio_rounded),
+          leading: const Icon(Icons.bluetooth_audio_rounded),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Device's", style: Theme.of(context).textTheme.titleLarge),
+              Text("Devices", style: Theme.of(context).textTheme.titleLarge),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "Scanning for Device's",
+                    _isScanning ? "Scanning for Devices" : "Scanning Done",
                     style: Theme.of(
                       context,
                     ).textTheme.labelMedium?.copyWith(color: AppColors.grey),
                   ),
-                  SizedBox(width: 5),
-                  SizedBox(
-                    width: 5.5,
-                    height: 5.5,
-                    child: CircularProgressIndicator(
-                      color: AppColors.grey,
-                      strokeCap: StrokeCap.round,
-                      strokeWidth: 1,
+                  if (_isScanning) ...[
+                    const SizedBox(width: 5),
+                    const SizedBox(
+                      width: 5.5,
+                      height: 5.5,
+                      child: CircularProgressIndicator(
+                        color: AppColors.blue,
+                        strokeCap: StrokeCap.round,
+                        strokeWidth: 1,
+                      ),
                     ),
-                  ),
+                  ] else ...[
+                    const SizedBox(width: 3),
+                    Icon(Icons.done_rounded, color: AppColors.green, size: 13),
+                  ],
                 ],
               ),
             ],
           ),
           actions: [
             IconButton(
-              onPressed: () {
-                BlocProvider.of<GetBleDevicesCubit>(context).getBleDevices();
-              },
-              icon: Icon(Icons.refresh_rounded),
+              onPressed: _startScan,
+              icon: const Icon(Icons.refresh_rounded),
             ),
           ],
         ),
@@ -104,55 +128,58 @@ class _DevicePageState extends State<DevicePage> {
             if (state is GetBleDevicesSuccessState) {
               return StreamBuilder(
                 stream: state.devices,
-                builder: (context, asyncSnapshot) {
-                  if (!asyncSnapshot.hasData) {
-                    return AppLoadingWidget();
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return const AppLoadingWidget();
+
+                  final devices =
+                      snapshot.data
+                          ?.where((d) => d.device.advName.startsWith("TEL"))
+                          .toList() ??
+                      [];
+
+                  if (devices.isEmpty) {
+                    return const Center(child: Text("No Devices Found"));
                   }
-                  final devices = asyncSnapshot.data;
+
                   return ListView.builder(
-                    itemCount: devices?.length,
+                    itemCount: devices.length,
                     itemBuilder: (context, index) {
-                      final device = devices?[index].device;
-                      if (device!.advName.startsWith("TEL")) {
-                        return BlocBuilder<
-                          ConnectToBleDeviceCubit,
-                          ConnectToBleDeviceState
-                        >(
-                          builder: (context, state) {
-                            return DeviceListTile(
-                              isLoading:
-                                  state is ConnectToBleDeviceLoadingState &&
-                                  state.index == index,
-                              deviceName: device.advName,
-                              deviceAddress: device.remoteId.toString(),
-                              onPressed: () {
-                                BlocProvider.of<ConnectToBleDeviceCubit>(
-                                  context,
-                                ).connectToBleDevice(
-                                  device: device,
-                                  index: index,
-                                );
-                              },
-                            );
-                          },
-                        );
-                      }
-                      return Container();
+                      final device = devices[index].device;
+
+                      return BlocBuilder<
+                        ConnectToBleDeviceCubit,
+                        ConnectToBleDeviceState
+                      >(
+                        builder: (context, connectState) {
+                          return DeviceListTile(
+                            isLoading:
+                                connectState
+                                    is ConnectToBleDeviceLoadingState &&
+                                connectState.index == index,
+                            deviceName: device.advName,
+                            deviceAddress: device.remoteId.toString(),
+                            onPressed: () {
+                              context
+                                  .read<ConnectToBleDeviceCubit>()
+                                  .connectToBleDevice(
+                                    device: device,
+                                    index: index,
+                                  );
+                            },
+                          );
+                        },
+                      );
                     },
                   );
                 },
               );
             }
+
             if (state is GetBleDevicesFailureState) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [Text(state.message)],
-                ),
-              );
+              return Center(child: Text(state.message));
             }
-            return AppLoadingWidget();
+
+            return const AppLoadingWidget();
           },
         ),
       ),

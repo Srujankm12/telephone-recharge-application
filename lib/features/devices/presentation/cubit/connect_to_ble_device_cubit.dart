@@ -25,7 +25,12 @@ class ConnectToBleDeviceCubit extends Cubit<ConnectToBleDeviceState> {
         emit(ConnectToBleDeviceFailureState(message: failure.message));
       },
       (success) {
-        emit(ConnectToBleDeviceSuccessState(connectionStatus: success));
+        emit(
+          ConnectToBleDeviceSuccessState(
+            connectionStatus: success,
+            device: device,
+          ),
+        );
       },
     );
   }
