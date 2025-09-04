@@ -4,7 +4,7 @@ import 'package:telephone_recharge_application/core/utils/telephone_bluetooth_ma
 
 abstract interface class DevicesLocalDatasource {
   Future<Stream<List<ScanResult>>> getBleDevices();
-  Future<bool> connectToDevice({required BluetoothDevice device});
+  Future<bool> connectToBleDevice({required BluetoothDevice device});
 }
 
 class DevicesLocalDatasourceImpl implements DevicesLocalDatasource {
@@ -15,15 +15,18 @@ class DevicesLocalDatasourceImpl implements DevicesLocalDatasource {
   @override
   Future<Stream<List<ScanResult>>> getBleDevices() async {
     try {
+      if(!await bluetoothManager.checkBluetoothState()){
+        await bluetoothManager.turnOnBluetooth();
+      }
       await bluetoothManager.startScan();
       return bluetoothManager.scanResults();
     } catch (_) {
-      throw LocalException(message: "Error getting devices. Try again.");
+      throw LocalException(message: "Exception in Bluetooth Communication.");
     }
   }
 
   @override
-  Future<bool> connectToDevice({required BluetoothDevice device}) async {
+  Future<bool> connectToBleDevice({required BluetoothDevice device}) async {
     try {
       await bluetoothManager.connectToDevice(device);
       final status = await bluetoothManager.connectionStatus().firstWhere(
@@ -32,8 +35,8 @@ class DevicesLocalDatasourceImpl implements DevicesLocalDatasource {
             s == BluetoothConnectionState.disconnected,
       );
       return status == BluetoothConnectionState.connected;
-    } catch (e) {
-      return false;
+    } catch (_) {
+      throw LocalException(message: "Exception in Bluetooth Communication.");
     }
   }
 }

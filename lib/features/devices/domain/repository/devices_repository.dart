@@ -4,7 +4,7 @@ import 'package:telephone_recharge_application/core/errors/failure.dart';
 
 abstract interface class DevicesRepository {
   Future<Either<Failure, Stream<List<ScanResult>>>> getBleDevices();
-  Future<Either<Failure, bool>> connectToDevice({
+  Future<Either<Failure, bool>> connectToBleDevice({
     required BluetoothDevice device,
   });
 }

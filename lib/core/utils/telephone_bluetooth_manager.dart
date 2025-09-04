@@ -52,6 +52,18 @@ class TelephoneBluetoothManager {
     return services.firstWhere((s) => s.uuid == serviceUuid);
   }
 
+  Future<bool> checkBluetoothState() async {
+    final BluetoothAdapterState state = FlutterBluePlus.adapterStateNow;
+    if(state == BluetoothAdapterState.off){
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> turnOnBluetooth() async {
+    await FlutterBluePlus.turnOn();
+  }
+
   Future<Map<String, dynamic>?> writeJsonAndWaitForResponse({
     required BluetoothService service,
     required Guid charUuid,

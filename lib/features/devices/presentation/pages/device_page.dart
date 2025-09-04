@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:telephone_recharge_application/core/arguments/options_page_args.dart';
 import 'package:telephone_recharge_application/core/theme/app_colors.dart';
 import 'package:telephone_recharge_application/core/widgets/app_loading_widget.dart';
+import 'package:telephone_recharge_application/core/widgets/app_snackbar.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/connect_to_ble_device_cubit.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/get_ble_devices_cubit.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/widgets/device_list_tile.dart';
@@ -33,34 +34,13 @@ class _DevicePageState extends State<DevicePage> {
 
   void _startScan() {
     setState(() => _isScanning = true);
-
-    // Cancel old timer if exists
     _scanTimer?.cancel();
-
-    // Start 10s timer
     _scanTimer = Timer(const Duration(seconds: 10), () {
       if (mounted) {
         setState(() => _isScanning = false);
       }
     });
-
-    // Trigger BLE scan
     context.read<GetBleDevicesCubit>().getBleDevices();
-  }
-
-  void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        elevation: 0,
-        content: Text(
-          message,
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(color: AppColors.white),
-        ),
-        backgroundColor: AppColors.blue,
-      ),
-    );
   }
 
   @override
@@ -75,15 +55,14 @@ class _DevicePageState extends State<DevicePage> {
               arguments: OptionsPageArgs(device: state.device),
             );
           } else {
-            _showSnackBar(context, "Failed to Connect.");
+            AppSnackbar.showSnackBar("Not Connected to Bluetooth, Try Again.", context);
           }
         } else if (state is ConnectToBleDeviceFailureState) {
-          _showSnackBar(context, state.message);
+          AppSnackbar.showSnackBar(state.message, context);
         }
       },
       child: Scaffold(
         appBar: AppBar(
-          titleSpacing: 0,
           leading: const Icon(Icons.bluetooth_audio_rounded),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,14 +117,13 @@ class _DevicePageState extends State<DevicePage> {
                       [];
 
                   if (devices.isEmpty) {
-                    return const Center(child: Text("No Devices Found"));
+                    return Center(child: Text("No Ble Devices Found." , style: Theme.of(context).textTheme.labelLarge,),);
                   }
 
                   return ListView.builder(
                     itemCount: devices.length,
                     itemBuilder: (context, index) {
                       final device = devices[index].device;
-
                       return BlocBuilder<
                         ConnectToBleDeviceCubit,
                         ConnectToBleDeviceState
@@ -174,11 +152,9 @@ class _DevicePageState extends State<DevicePage> {
                 },
               );
             }
-
             if (state is GetBleDevicesFailureState) {
-              return Center(child: Text(state.message));
+              return Center(child: Text(state.message , style: Theme.of(context).textTheme.labelLarge,));
             }
-
             return const AppLoadingWidget();
           },
         ),

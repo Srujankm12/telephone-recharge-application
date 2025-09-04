@@ -1,5 +1,5 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:telephone_recharge_application/core/constants/constants.dart';
+import 'package:telephone_recharge_application/core/constants/bluetooth_constants.dart';
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
 import 'package:telephone_recharge_application/core/utils/telephone_bluetooth_manager.dart';
 import 'package:telephone_recharge_application/features/initilize/data/models/init_card_restricted_model.dart';
@@ -24,11 +24,11 @@ class InitCardLocalDatasourceImpl implements InitCardLocalDatasource {
   }) async {
     try {
       final service = await bluetoothManager.getTargetService(
-        Guid(Constants.serviceUuid),
+        Guid(BluetoothConstants.serviceUuid),
       );
       final response = await bluetoothManager.writeJsonAndWaitForResponse(
         service: service,
-        charUuid: Guid(Constants.charUuid),
+        charUuid: Guid(BluetoothConstants.charUuid),
         payload: restrictedModeDetails.toJson(),
       );
       print(response);

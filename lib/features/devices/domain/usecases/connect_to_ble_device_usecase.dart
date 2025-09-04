@@ -10,7 +10,7 @@ class ConnectToBleDeviceUsecase
   ConnectToBleDeviceUsecase({required this.devicesRepository});
   @override
   Future<Either<Failure, bool>> call(params) async {
-    return await devicesRepository.connectToDevice(device: params.device);
+    return await devicesRepository.connectToBleDevice(device: params.device);
   }
 }
 

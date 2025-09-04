@@ -7,9 +7,10 @@ Future<void> init() async {
   await _initHttp();
   await _requestBlePermissions();
   await _initInternetConnectivity();
+  _initAuth();
   _initBluetoothManager();
-  await _initDevicesListCubit();
-  await _initCardMode();
+  _initDevicesListCubit();
+  _initCardMode();
 }
 
 Future<void> _initHive() async {
@@ -47,7 +48,18 @@ Future<void> _initInternetConnectivity() async {
   serviceLocator.registerLazySingleton(() => connection);
 }
 
-Future<void> _initDevicesListCubit() async {
+void _initAuth() async {
+  serviceLocator
+    ..registerLazySingleton<AuthRemoteDatasource>(() => AuthRemoteDatasourceImpl(client: serviceLocator()))
+    ..registerLazySingleton<AuthLocalDatasource>(() => AuthLocalDatasourceImpl(box: serviceLocator()))
+    ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(authRemoteDatasource: serviceLocator(), authLocalDatasource: serviceLocator()))
+    ..registerLazySingleton<LoginUsecase>(() => LoginUsecase(authRepository: serviceLocator()))
+    ..registerLazySingleton<AutoLoginUsecase>(() => AutoLoginUsecase(authRepository: serviceLocator()))
+    ..registerFactory<LoginCubit>(() => LoginCubit(loginUsecase: serviceLocator()))
+    ..registerFactory<AutoLoginCubit>(() => AutoLoginCubit(autoLoginUsecase: serviceLocator()));
+}
+
+void _initDevicesListCubit() async {
   serviceLocator
     ..registerLazySingleton<DevicesLocalDatasource>(
       () => DevicesLocalDatasourceImpl(bluetoothManager: serviceLocator()),
@@ -70,7 +82,7 @@ Future<void> _initDevicesListCubit() async {
     );
 }
 
-Future<void> _initCardMode() async {
+void _initCardMode() async {
   serviceLocator
     ..registerLazySingleton<InitCardLocalDatasource>(
       () => InitCardLocalDatasourceImpl(

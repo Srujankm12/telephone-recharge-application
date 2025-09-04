@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:telephone_recharge_application/core/arguments/options_page_args.dart';
+import 'package:telephone_recharge_application/features/authentication/login/presentation/cubit/login_cubit.dart';
 import 'package:telephone_recharge_application/features/balance/presentation/page/balance_page.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/connect_to_ble_device_cubit.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/get_ble_devices_cubit.dart';
@@ -31,7 +32,12 @@ class GeneratedRoutes {
     final args = settings.arguments;
     switch (settings.name) {
       case login:
-        return MaterialPageRoute(builder: (context) => LoginPage());
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => serviceLocator<LoginCubit>(),
+            child: LoginPage(),
+          ),
+        );
       case devices:
         return MaterialPageRoute(
           builder: (context) => MultiBlocProvider(
@@ -72,5 +78,6 @@ class GeneratedRoutes {
       default:
         return null;
     }
+    return null;
   }
 }
