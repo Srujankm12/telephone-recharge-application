@@ -9,6 +9,7 @@ Future<void> init() async {
   await _initInternetConnectivity();
   _initBluetoothManager();
   await _initDevicesListCubit();
+  await _initCardMode();
 }
 
 Future<void> _initHive() async {
@@ -66,5 +67,25 @@ Future<void> _initDevicesListCubit() async {
     ..registerFactory<ConnectToBleDeviceCubit>(
       () =>
           ConnectToBleDeviceCubit(connectToBleDeviceUsecase: serviceLocator()),
+    );
+}
+
+Future<void> _initCardMode() async {
+  serviceLocator
+    ..registerLazySingleton<InitCardLocalDatasource>(
+      () => InitCardLocalDatasourceImpl(
+        bluetoothManager: serviceLocator(),
+        client: serviceLocator(),
+      ),
+    )
+    ..registerLazySingleton<InitCardRepository>(
+      () => InitCardRepositoryImpl(initCardLocalDatasource: serviceLocator()),
+    )
+    ..registerLazySingleton<InitCardRestrictedUsecase>(
+      () => InitCardRestrictedUsecase(initCardRepository: serviceLocator()),
+    )
+    ..registerFactory<InitCardRestrictedCubit>(
+      () =>
+          InitCardRestrictedCubit(initCardRestrictedUsecase: serviceLocator()),
     );
 }

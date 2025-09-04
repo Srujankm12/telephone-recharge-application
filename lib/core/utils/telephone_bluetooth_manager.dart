@@ -70,22 +70,35 @@ class TelephoneBluetoothManager {
 
       // 3. Setup completer to wait for response
       final completer = Completer<Map<String, dynamic>?>();
+      final requestJson = jsonEncode(payload); // store request string
 
       // 4. Listen for incoming notifications
       final sub = characteristic.lastValueStream.listen((data) {
         try {
+          if (data.isEmpty) return; // ignore empty packets
+
           final responseStr = utf8.decode(data);
+          print(responseStr);
+
+          if (responseStr.trim().isEmpty) return; // ignore empty strings
+
           final responseJson = jsonDecode(responseStr) as Map<String, dynamic>;
+
+          // Ignore echoed request
+          if (responseStr == requestJson) return;
+
           if (!completer.isCompleted) {
             completer.complete(responseJson);
           }
         } catch (e) {
-          throw Exception({"message": "exception while getting response"});
+          if (!completer.isCompleted) {
+            completer.completeError(Exception({"message": e.toString()}));
+          }
         }
       });
 
       // 5. Write JSON request
-      final dataToSend = utf8.encode(jsonEncode(payload));
+      final dataToSend = utf8.encode(requestJson);
       await characteristic.write(dataToSend, withoutResponse: false);
 
       // 6. Wait for response or timeout
