@@ -15,7 +15,7 @@ class DevicesLocalDatasourceImpl implements DevicesLocalDatasource {
   @override
   Future<Stream<List<ScanResult>>> getBleDevices() async {
     try {
-      if(!await bluetoothManager.checkBluetoothState()){
+      if(await bluetoothManager.checkBluetoothState()){
         await bluetoothManager.turnOnBluetooth();
       }
       await bluetoothManager.startScan();
