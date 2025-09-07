@@ -3,12 +3,11 @@ import 'dart:convert';
 import 'package:telephone_recharge_application/core/constants/http_routes.dart';
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
 import 'package:telephone_recharge_application/features/recharge_history/data/models/recharge_history_model.dart';
-import 'package:telephone_recharge_application/features/recharge_history/data/models/recharge_history_user_details_model.dart';
 import 'package:http/http.dart' as http;
 
 abstract interface class RechargeHistoryRemoteDatasource {
   Future<List<RechargeHistoryModel>> getRechargeHistory({
-    required RechargeHistoryUserDetailsModel userDetails,
+    required String userId,
   });
 }
 
@@ -18,11 +17,11 @@ class RechargeHistoryRemoteDatasourceImpl
   RechargeHistoryRemoteDatasourceImpl({required this.client});
   @override
   Future<List<RechargeHistoryModel>> getRechargeHistory({
-    required RechargeHistoryUserDetailsModel userDetails,
+    required String userId,
   }) async {
     try {
       final jsonResponse = await client.get(
-        Uri.parse("${HttpRoutes.rechargeHistory}/${userDetails.userId}"),
+        Uri.parse("${HttpRoutes.rechargeHistory}/$userId"),
         headers: HttpRoutes.jsonHeaders,
       );
       final response = jsonDecode(jsonResponse.body);
@@ -30,7 +29,7 @@ class RechargeHistoryRemoteDatasourceImpl
         throw ServerException(message: response["error"]);
       }
       if (response["data"] == null) {
-        throw ServerException(message: "No Recharge History");
+        throw ServerException(message: "No Recharge History.");
       }
       List<RechargeHistoryModel> rechargeHistory = (response["data"] as List)
           .map((ele) => RechargeHistoryModel.fromJson(ele))

@@ -8,6 +8,7 @@ Future<void> init() async {
   await _requestBlePermissions();
   await _initInternetConnectivity();
   _initAuth();
+  _initRechargeHistory();
   _initBluetoothManager();
   _initDevicesListCubit();
   _initCardMode();
@@ -50,13 +51,57 @@ Future<void> _initInternetConnectivity() async {
 
 void _initAuth() async {
   serviceLocator
-    ..registerLazySingleton<AuthRemoteDatasource>(() => AuthRemoteDatasourceImpl(client: serviceLocator()))
-    ..registerLazySingleton<AuthLocalDatasource>(() => AuthLocalDatasourceImpl(box: serviceLocator()))
-    ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(authRemoteDatasource: serviceLocator(), authLocalDatasource: serviceLocator()))
-    ..registerLazySingleton<LoginUsecase>(() => LoginUsecase(authRepository: serviceLocator()))
-    ..registerLazySingleton<AutoLoginUsecase>(() => AutoLoginUsecase(authRepository: serviceLocator()))
-    ..registerFactory<LoginCubit>(() => LoginCubit(loginUsecase: serviceLocator()))
-    ..registerFactory<AutoLoginCubit>(() => AutoLoginCubit(autoLoginUsecase: serviceLocator()));
+    ..registerLazySingleton<AuthRemoteDatasource>(
+      () => AuthRemoteDatasourceImpl(client: serviceLocator()),
+    )
+    ..registerLazySingleton<AuthLocalDatasource>(
+      () => AuthLocalDatasourceImpl(box: serviceLocator()),
+    )
+    ..registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryImpl(
+        authRemoteDatasource: serviceLocator(),
+        authLocalDatasource: serviceLocator(),
+      ),
+    )
+    ..registerLazySingleton<LoginUsecase>(
+      () => LoginUsecase(authRepository: serviceLocator()),
+    )
+    ..registerLazySingleton<AutoLoginUsecase>(
+      () => AutoLoginUsecase(authRepository: serviceLocator()),
+    )
+    ..registerFactory<LoginCubit>(
+      () => LoginCubit(loginUsecase: serviceLocator()),
+    )
+    ..registerFactory<AutoLoginCubit>(
+      () => AutoLoginCubit(autoLoginUsecase: serviceLocator()),
+    );
+}
+
+void _initRechargeHistory() {
+  serviceLocator
+    ..registerLazySingleton<RechargeHistoryRemoteDatasource>(
+      () => RechargeHistoryRemoteDatasourceImpl(client: serviceLocator()),
+    )
+    ..registerLazySingleton<RechargeHistoryLocalDatasource>(
+      () => RechargeHistoryLocalDatasourceImpl(
+        box: serviceLocator(),
+        connection: serviceLocator(),
+      ),
+    )
+    ..registerLazySingleton<RechargeHistoryRepository>(
+      () => RechargeHistoryRepositoryImpl(
+        rechargeHistoryLocalDatasource: serviceLocator(),
+        rechargeHistoryRemoteDatasource: serviceLocator(),
+      ),
+    )
+    ..registerLazySingleton<GetRechargeHistoryUsecase>(
+      () => GetRechargeHistoryUsecase(
+        rechargeHistoryRepository: serviceLocator(),
+      ),
+    )
+    ..registerFactory<GetRechargeHistoryCubit>(
+      () => GetRechargeHistoryCubit(rechargeHistoryUsecase: serviceLocator()),
+    );
 }
 
 void _initDevicesListCubit() async {
@@ -87,10 +132,15 @@ void _initCardMode() async {
     ..registerLazySingleton<InitCardLocalDatasource>(
       () => InitCardLocalDatasourceImpl(
         bluetoothManager: serviceLocator(),
-        box: serviceLocator()
+        box: serviceLocator(),
       ),
     )
-    ..registerLazySingleton<InitCardRemoteDatasource>(() => InitCardRemoteDatasourceImpl(client: serviceLocator(), connection: serviceLocator()))
+    ..registerLazySingleton<InitCardRemoteDatasource>(
+      () => InitCardRemoteDatasourceImpl(
+        client: serviceLocator(),
+        connection: serviceLocator(),
+      ),
+    )
     ..registerLazySingleton<InitCardRepository>(
       () => InitCardRepositoryImpl(
         initCardLocalDatasource: serviceLocator(),

@@ -26,5 +26,11 @@ import 'package:telephone_recharge_application/features/initilize/data/repositor
 import 'package:telephone_recharge_application/features/initilize/domain/repository/init_card_repository.dart';
 import 'package:telephone_recharge_application/features/initilize/domain/usecases/init_card_restricted_usecase.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/cubit/init_card_restricted_cubit.dart';
+import 'package:telephone_recharge_application/features/recharge_history/data/datasources/recharge_history_local_datasource.dart';
+import 'package:telephone_recharge_application/features/recharge_history/data/datasources/recharge_history_remote_datasource.dart';
+import 'package:telephone_recharge_application/features/recharge_history/data/repository/recharge_history_repository_impl.dart';
+import 'package:telephone_recharge_application/features/recharge_history/domain/repository/recharge_history_repository.dart';
+import 'package:telephone_recharge_application/features/recharge_history/domain/usecases/get_recharge_history_usecase.dart';
+import 'package:telephone_recharge_application/features/recharge_history/presentation/cubit/get_recharge_history_cubit.dart';
 
 part 'init_dependencies.main.dart';
