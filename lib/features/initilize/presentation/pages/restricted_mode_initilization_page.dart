@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:telephone_recharge_application/core/arguments/options_page_args.dart';
 import 'package:telephone_recharge_application/core/theme/app_colors.dart';
 import 'package:telephone_recharge_application/core/widgets/app_text_field.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/cubit/init_card_restricted_cubit.dart';
+import 'package:telephone_recharge_application/features/initilize/presentation/widgets/initilize_button.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/widgets/restricted_phone_number_text_field.dart';
 
 class RestrictedModeInitilizationPage extends StatefulWidget {
-  const RestrictedModeInitilizationPage({super.key});
+  final OptionsPageArgs args;
+  const RestrictedModeInitilizationPage({super.key, required this.args});
 
   @override
   State<RestrictedModeInitilizationPage> createState() =>
@@ -179,49 +182,17 @@ class _RestrictedModeInitilizationPageState
         bottomSheet:
             BlocBuilder<InitCardRestrictedCubit, InitCardRestrictedState>(
               builder: (context, state) {
-                return Padding(
-                  padding: const EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                    bottom: 20,
-                  ),
-                  child: ElevatedButton(
-                    onPressed: phoneNumbers.length == 3
-                        ? () {
-                            BlocProvider.of<InitCardRestrictedCubit>(
-                              context,
-                            ).initCardRestrictedMode(
-                              amount: _amountController.text,
-                              phoneNumbers: phoneNumbers,
-                            );
-                          }
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      fixedSize: Size(MediaQuery.of(context).size.width, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(10),
-                      ),
-                    ),
-                    child: state is InitCardRestrictedLoadingState
-                        ? SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              color: AppColors.blue,
-                              strokeCap: StrokeCap.round,
-                              strokeWidth: 3,
-                            ),
-                          )
-                        : Text(
-                            "Initilize Card",
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(
-                                  color: AppColors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          ),
-                  ),
+                return InitilizeButton(
+                  onPressed: () {
+                    BlocProvider.of<InitCardRestrictedCubit>(
+                      context,
+                    ).initCardRestrictedMode(
+                      amount: _amountController.text,
+                      phoneNumbers: phoneNumbers,
+                    );
+                  },
+                  isLoading: state is InitCardRestrictedLoadingState,
+                  isButtonEnabled: phoneNumbers.length == 3,
                 );
               },
             ),

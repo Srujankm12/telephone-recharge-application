@@ -7,6 +7,7 @@ class AppTextField extends StatefulWidget {
   final bool isPasswordField;
   final String? Function(String?)? validator;
   final TextEditingController controller;
+  final TextInputType? keyboardType;
   const AppTextField({
     super.key,
     required this.hintText,
@@ -14,6 +15,7 @@ class AppTextField extends StatefulWidget {
     this.isPasswordField = false,
     this.validator,
     required this.controller,
+    this.keyboardType
   });
 
   @override
@@ -21,7 +23,18 @@ class AppTextField extends StatefulWidget {
 }
 
 class _AppTextFieldState extends State<AppTextField> {
-  bool isObscure = true;
+  bool isObscure = false;
+
+  @override
+  void initState() {
+    if (widget.isPasswordField) {
+      setState(() {
+        isObscure = true;
+      });
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -32,6 +45,7 @@ class _AppTextFieldState extends State<AppTextField> {
       cursorOpacityAnimates: true,
       cursorRadius: Radius.circular(10),
       validator: widget.validator,
+      keyboardType: widget.keyboardType,
       decoration: InputDecoration(
         hintText: widget.hintText,
         prefixIcon: Icon(widget.icon),

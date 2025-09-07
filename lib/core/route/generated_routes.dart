@@ -8,6 +8,7 @@ import 'package:telephone_recharge_application/features/devices/presentation/cub
 import 'package:telephone_recharge_application/features/devices/presentation/pages/device_page.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/cubit/init_card_restricted_cubit.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/pages/card_mode_list_page.dart';
+import 'package:telephone_recharge_application/features/initilize/presentation/pages/free_to_dial_mode_initilization_page.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/pages/restricted_mode_initilization_page.dart';
 import 'package:telephone_recharge_application/features/mode/presentation/page/change_mode_page.dart';
 import 'package:telephone_recharge_application/features/options/presentation/pages/options_page.dart';
@@ -28,6 +29,8 @@ class GeneratedRoutes {
     const String cardModeListPage = "/cardModeListPage";
     const String restrictedModeInitilizationPage =
         "/restrictedModeInitilizationPage";
+    const String freeToDialModeInitilizationPage =
+        "/freeToDialModeInitilizationPage";
 
     final args = settings.arguments;
     switch (settings.name) {
@@ -67,14 +70,28 @@ class GeneratedRoutes {
       case changeMode:
         return MaterialPageRoute(builder: (context) => ChangeModePage());
       case cardModeListPage:
-        return MaterialPageRoute(builder: (context) => CardModeListPage());
+        if (args is OptionsPageArgs) {
+          return MaterialPageRoute(
+            builder: (context) => CardModeListPage(args: args),
+          );
+        }
       case restrictedModeInitilizationPage:
-        return MaterialPageRoute(
-          builder: (context) => BlocProvider(
-            create: (context) => serviceLocator<InitCardRestrictedCubit>(),
-            child: RestrictedModeInitilizationPage(),
-          ),
-        );
+        if (args is OptionsPageArgs) {
+          return MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => serviceLocator<InitCardRestrictedCubit>(),
+              child: RestrictedModeInitilizationPage(args: args),
+            ),
+          );
+        }
+      case freeToDialModeInitilizationPage:
+        if (args is OptionsPageArgs) {
+          return MaterialPageRoute(
+            builder: (context) {
+              return FreeToDialModeInitilizationPage(args: args);
+            },
+          );
+        }
       default:
         return null;
     }

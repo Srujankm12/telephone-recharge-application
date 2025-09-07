@@ -46,7 +46,15 @@ class _OptionsPageState extends State<OptionsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            OptionsBigCard(),
+            OptionsBigCard(
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  "/cardModeListPage",
+                  arguments: OptionsPageArgs(device: widget.args.device),
+                );
+              },
+            ),
             SizedBox(height: 10),
             GridView(
               physics: NeverScrollableScrollPhysics(),

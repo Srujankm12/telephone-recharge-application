@@ -1,51 +1,52 @@
-// import 'dart:convert';
+import 'dart:convert';
 
-// import 'package:http/http.dart' as http;
-// import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
-// import 'package:telephone_recharge_application/core/constants/routes.dart';
+import 'package:http/http.dart' as http;
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:telephone_recharge_application/core/constants/http_routes.dart';
+import 'package:telephone_recharge_application/core/errors/exceptions.dart';
+import 'package:telephone_recharge_application/features/initilize/data/models/user_credentials_model.dart';
 
-// abstract interface class InitCardRemoteDatasource {
-//   Future<bool> checkInternetConnection();
-//   Future<String> deductAmountFromDatabase({
-//     required String collegeId,
-//     required String machineId,
-//     required String userId,
-//     required String amount,
-//   });
-// }
+abstract interface class InitCardRemoteDatasource {
+  Future<bool> checkInternetConnection();
+  Future<String> deductAmountFromDatabase({
+    required UserCredentialsModel userCredentials,
+  });
+}
 
-// class InitCardRemoteDatasourceImpl implements InitCardRemoteDatasource {
-//   final http.Client client;
-//   final InternetConnection connection;
-//   InitCardRemoteDatasourceImpl({
-//     required this.client,
-//     required this.connection,
-//   });
-//   @override
-//   Future<String> deductAmountFromDatabase({
-//     required String collegeId,
-//     required String machineId,
-//     required String userId,
-//     required String amount,
-//   }) async {
-//     try {
-//       final response = await client.post(
-//         Uri.parse("${Routes.deductAmount}/"),
-//         body: jsonEncode({
-//           "college_id":"",
-//           "machine_id":"",
-//           "user_id":"",
-//           "amount":
-//         }),
-//         headers: {"Content-Type": "application/json"},
-//       );
-//     } catch (e) {
-//       throw e;
-//     }
-//   }
+class InitCardRemoteDatasourceImpl implements InitCardRemoteDatasource {
+  final http.Client client;
+  final InternetConnection connection;
+  InitCardRemoteDatasourceImpl({
+    required this.client,
+    required this.connection,
+  });
+  @override
+  Future<String> deductAmountFromDatabase({
+    required UserCredentialsModel userCredentials,
+  }) async {
+    try {
+      final jsonResponse = await client.post(
+        Uri.parse("${HttpRoutes.deductAmount}/${userCredentials.collegeId}/${userCredentials.machineId}"),
+        body: jsonEncode({
+          "user_id": userCredentials.userId,
+          "amount": userCredentials.amount,
+        }),
+        headers: HttpRoutes.jsonHeaders,
+      );
+      final response = jsonDecode(jsonResponse.body);
+      if(jsonResponse.statusCode != 200){
+        throw ServerException(message: response["error"]);
+      }
+      return response["message"];
+    } on ServerException catch (e) {
+      throw ServerException(message: e.message);
+    } catch (_) {
+      throw ServerException(message: "Error while Deducting Amount.");
+    }
+  }
 
-//   @override
-//   Future<bool> checkInternetConnection() async {
-//     return await connection.hasInternetAccess;
-//   }
-// }
+  @override
+  Future<bool> checkInternetConnection() async {
+    return await connection.hasInternetAccess;
+  }
+}
