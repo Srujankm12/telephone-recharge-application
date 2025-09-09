@@ -38,12 +38,12 @@ class _RechargeHistoryPageState extends State<RechargeHistoryPage> {
             return ListView.builder(
               itemBuilder: (context, index) {
                 return RechargeHistoryCard(
-                  title: "12-12-25",
-                  subtitle: "9:30 AM",
-                  trailing: "30",
+                  title: state.rechargeHistory[index].date,
+                  subtitle: state.rechargeHistory[index].time,
+                  trailing: state.rechargeHistory[index].rechargeAmount,
                 );
               },
-              itemCount: 10,
+              itemCount: state.rechargeHistory.length,
             );
           }
           if (state is GetRechargeHistoryFailureState) {
@@ -54,7 +54,7 @@ class _RechargeHistoryPageState extends State<RechargeHistoryPage> {
                 children: [
                   Text(
                     state.message,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ],
               ),

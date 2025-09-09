@@ -1,29 +1,53 @@
-import 'package:hive/hive.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:telephone_recharge_application/core/constants/bluetooth_constants.dart';
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
-import 'package:telephone_recharge_application/features/balance/data/models/balance_model.dart';
+import 'package:telephone_recharge_application/core/utils/telephone_bluetooth_manager.dart';
 
 abstract interface class BalanceLocalDatasource {
-  Future<BalanceModel> getUserDetails();
+  Future<String> getCardBalance({required String signal});
+  Future<void> reconnectToDevice();
 }
 
-class BalanceLocalDatasourceImpl implements BalanceLocalDatasource{
-  final Box<String> box;
-  BalanceLocalDatasourceImpl({required this.box});
-  @override
-  Future<BalanceModel> getUserDetails() async {
-    try {
-      final String? userId = box.get("user_id");
-      final String? machineId = box.get("machine_id");
-      final String? collegeId = box.get("college_id");
+class BalanceLocalDatasourceImpl implements BalanceLocalDatasource {
+  final TelephoneBluetoothManager bluetoothManager;
+  BalanceLocalDatasourceImpl({required this.bluetoothManager});
 
-      if(userId == null || collegeId == null || machineId == null){
-        throw LocalException(message: "Error Fetching User Details.");
+  @override
+  Future<String> getCardBalance({required String signal}) async {
+    try {
+      if (!await bluetoothManager.checkBluetoothState()) {
+        await bluetoothManager.turnOnBluetooth();
       }
-      return BalanceModel(userId: userId, collegeId: collegeId, machineId: machineId);
+      final service = await bluetoothManager.getTargetService(
+        Guid(BluetoothConstants.serviceUuid),
+      );
+      final response = await bluetoothManager.writeJsonAndWaitForResponse(
+        service: service,
+        charUuid: Guid(BluetoothConstants.charUuid),
+        payload: {"signal": signal},
+      );
+      if (response == null) {
+        throw LocalException(message: "No Response from the Machine.");
+      }
+      if (response["error_status"] == "1") {
+        throw LocalException(message: "Card Not Found.");
+      }
+      if (response["error_status"] == "2") {
+        throw LocalException(message: "Card Authentication Failed.");
+      }
+      if (response["error_status"] == "3") {
+        throw LocalException(message: "Card Read Failed.");
+      }
+      return response["balance"];
     } on LocalException catch (e) {
       throw LocalException(message: e.message);
     } catch (_) {
-      throw LocalException(message: "Error in User Details.");
+      throw LocalException(message: "Error Getting Card Balance.");
     }
-  }  
+  }
+
+  @override
+  Future<void> reconnectToDevice() async {
+    await bluetoothManager.reconnectToDevice();
+  }
 }

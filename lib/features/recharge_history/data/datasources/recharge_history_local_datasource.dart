@@ -20,13 +20,13 @@ class RechargeHistoryLocalDatasourceImpl
     try {
       final String? userId = box.get("user_id");
       if (userId == null) {
-        throw LocalException(message: "Invalid User Credentials.");
+        throw LocalException(message: "User ID Not Found.");
       }
       return userId;
     } on LocalException catch (e) {
       throw LocalException(message: e.message);
     } catch (_) {
-      throw LocalException(message: "Exception while Getting User ID.");
+      throw LocalException(message: "Error while Getting User ID from Hive.");
     }
   }
 
@@ -35,7 +35,9 @@ class RechargeHistoryLocalDatasourceImpl
     try {
       return await connection.hasInternetAccess;
     } catch (e) {
-      throw LocalException(message: "Internet Connection Exception");
+      throw LocalException(
+        message: "Error while Checking Internet Connection.",
+      );
     }
   }
 }

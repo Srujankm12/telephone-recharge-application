@@ -29,17 +29,16 @@ class RechargeHistoryRemoteDatasourceImpl
         throw ServerException(message: response["error"]);
       }
       if (response["data"] == null) {
-        throw ServerException(message: "No Recharge History.");
+        throw ServerException(message: "No Recharge History to Display.");
       }
-      List<RechargeHistoryModel> rechargeHistory = (response["data"] as List)
+      return (response["data"] as List)
           .map((ele) => RechargeHistoryModel.fromJson(ele))
           .toList();
-      return rechargeHistory;
     } on ServerException catch (e) {
       throw ServerException(message: e.message);
     } catch (_) {
       throw ServerException(
-        message: "Exception while Fetching Recharge History.",
+        message: "Error Getting Recharge History from Server.",
       );
     }
   }

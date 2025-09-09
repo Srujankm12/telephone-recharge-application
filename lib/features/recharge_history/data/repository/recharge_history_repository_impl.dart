@@ -33,7 +33,7 @@ class RechargeHistoryRepositoryImpl implements RechargeHistoryRepository {
       return Left(Failure(message: e.message));
     } catch (_) {
       return Left(
-        Failure(message: "Exception while Fetching Recharge History."),
+        Failure(message: "Error Occured While Fetching Details."),
       );
     }
   }

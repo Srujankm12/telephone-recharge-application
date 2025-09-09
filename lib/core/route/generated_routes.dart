@@ -13,6 +13,7 @@ import 'package:telephone_recharge_application/features/initilize/presentation/p
 import 'package:telephone_recharge_application/features/mode/presentation/page/change_mode_page.dart';
 import 'package:telephone_recharge_application/features/options/presentation/pages/options_page.dart';
 import 'package:telephone_recharge_application/features/recharge/presentation/page/recharge_page.dart';
+import 'package:telephone_recharge_application/features/recharge_history/presentation/cubit/get_recharge_history_cubit.dart';
 import 'package:telephone_recharge_application/features/recharge_history/presentation/page/recharge_history_page.dart';
 import 'package:telephone_recharge_application/init_dependencies.dart';
 import '../../features/authentication/login/presentation/pages/login_page.dart';
@@ -41,6 +42,7 @@ class GeneratedRoutes {
             child: LoginPage(),
           ),
         );
+      // Device Page Route
       case devices:
         return MaterialPageRoute(
           builder: (context) => MultiBlocProvider(
@@ -55,14 +57,21 @@ class GeneratedRoutes {
             child: DevicePage(),
           ),
         );
+      // Options Page Route
       case options:
         if (args is OptionsPageArgs) {
           return MaterialPageRoute(
             builder: (context) => OptionsPage(args: args),
           );
         }
+      // Recharge History Page Route
       case rechargeHistory:
-        return MaterialPageRoute(builder: (context) => RechargeHistoryPage());
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => serviceLocator<GetRechargeHistoryCubit>(),
+            child: RechargeHistoryPage(),
+          ),
+        );
       case balance:
         return MaterialPageRoute(builder: (context) => BalancePage());
       case recharge:
