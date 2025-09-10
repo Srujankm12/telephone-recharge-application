@@ -5,6 +5,7 @@ import 'package:telephone_recharge_application/core/theme/app_colors.dart';
 import 'package:telephone_recharge_application/core/widgets/app_elevated_button.dart';
 import 'package:telephone_recharge_application/core/widgets/app_snackbar.dart';
 import 'package:telephone_recharge_application/core/widgets/app_text_field.dart';
+import 'package:telephone_recharge_application/features/authentication/login/presentation/cubit/auto_login_cubit.dart';
 import 'package:telephone_recharge_application/features/authentication/login/presentation/cubit/login_cubit.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,6 +19,12 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    context.read<AutoLoginCubit>().autoLogin();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -65,16 +72,27 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginCubit, LoginState>(
-      listener: (context, state) {
-        if(state is LoginSuccessState){
-          AppSnackbar.showSnackBar(state.message, context);
-          Navigator.pushReplacementNamed(context, "/devices");
-        }
-        if(state is LoginFailureState){
-          AppSnackbar.showSnackBar(state.message, context);
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<LoginCubit, LoginState>(
+          listener: (context, state) {
+            if (state is LoginSuccessState) {
+              AppSnackbar.showSnackBar(state.message, context);
+              Navigator.pushReplacementNamed(context, "/devices");
+            }
+            if (state is LoginFailureState) {
+              AppSnackbar.showSnackBar(state.message, context);
+            }
+          },
+        ),
+        BlocListener<AutoLoginCubit, AutoLoginState>(
+          listener: (context, state) {
+            if (state is AutoLoginSuccessState) {
+              Navigator.pushNamed(context, "/devices");
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         body: Padding(
           padding: EdgeInsetsGeometry.all(20),
@@ -106,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                     Image.asset(Images.loginPageImage, width: 280),
                     SizedBox(height: 10),
                     AppTextField(
-                      hintText: "username",
+                      hintText: "Email",
                       icon: Icons.person,
                       controller: _emailController,
                       validator: _emailValidator,
@@ -122,11 +140,15 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 8),
                     Align(
                       alignment: Alignment(0.9, 0),
-                      child: Text(
-                        "Forgot Password?",
-                        style: Theme.of(
-                          context,
-                        ).textTheme.labelLarge?.copyWith(color: AppColors.blue),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, "/forgotPassword");
+                        },
+                        child: Text(
+                          "Forgot Password?",
+                          style: Theme.of(context).textTheme.labelLarge
+                              ?.copyWith(color: AppColors.blue),
+                        ),
                       ),
                     ),
                     SizedBox(height: 20),
@@ -136,10 +158,12 @@ class _LoginPageState extends State<LoginPage> {
                           buttonText: "Login",
                           isLoading: state is LoginLoadingState,
                           onPressed: () {
-                            BlocProvider.of<LoginCubit>(context).loginRequest(
-                              email: _emailController.text,
-                              password: _passwordController.text,
-                            );
+                            if (_formKey.currentState!.validate()) {
+                              BlocProvider.of<LoginCubit>(context).loginRequest(
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                              );
+                            }
                           },
                         );
                       },

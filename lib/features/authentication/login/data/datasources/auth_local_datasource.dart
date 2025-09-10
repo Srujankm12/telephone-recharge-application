@@ -18,6 +18,8 @@ class AuthLocalDatasourceImpl implements AuthLocalDatasource {
         throw LocalException(message: "Token not Found.");
       }
       return token;
+    } on LocalException catch (e) {
+      throw LocalException(message: e.message);
     } catch (_) {
       throw LocalException(message: "Error Getting token From Local Storage.");
     }
@@ -26,15 +28,17 @@ class AuthLocalDatasourceImpl implements AuthLocalDatasource {
   @override
   Future<bool> saveUserDetails({required String token}) async {
     try {
-      final response = JwtDecoder.decode(token);
+      final Map<String, dynamic> response = JwtDecoder.decode(token);
       await box.put("token", token);
       await box.put("user_id", response["user_id"]);
       await box.put("user_name", response["user_name"]);
-      await box.put("", response["machine_id"]);
+      await box.put("machine_id", response["machine_id"]);
       await box.put("college_id", response["college_id"]);
       return true;
     } catch (_) {
-      throw LocalException(message: "Failed to save User Details.");
+      throw LocalException(
+        message: "Error Storing User Details in Local Storage.",
+      );
     }
   }
 }

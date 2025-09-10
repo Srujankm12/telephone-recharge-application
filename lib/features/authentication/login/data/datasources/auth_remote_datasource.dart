@@ -13,24 +13,22 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   final http.Client client;
   const AuthRemoteDatasourceImpl({required this.client});
   @override
-  Future<String> loginRequest({
-    required LoginRequestModel userDetails,
-  }) async {
+  Future<String> loginRequest({required LoginRequestModel userDetails}) async {
     try {
       final jsonResponse = await client.post(
-        Uri.parse(HttpRoutes.login), 
-        body: userDetails.toJson(), 
-        headers: HttpRoutes.jsonHeaders
+        Uri.parse(HttpRoutes.login),
+        body: userDetails.toJson(),
+        headers: HttpRoutes.jsonHeaders,
       );
       final response = jsonDecode(jsonResponse.body);
-      if(jsonResponse.statusCode != 200){
+      if (jsonResponse.statusCode != 200) {
         throw ServerException(message: response["error"]);
       }
-      return response["token"];
-    } on ServerException catch(e) {
+      return response["data"]["token"];
+    } on ServerException catch (e) {
       throw ServerException(message: e.message);
     } catch (_) {
-      throw ServerException(message: "Exception While Communicating with Server.");
-    } 
+      throw ServerException(message: "Error while Logging in by Server.");
+    }
   }
 }

@@ -11,7 +11,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDatasource authRemoteDatasource;
   final AuthLocalDatasource authLocalDatasource;
   const AuthRepositoryImpl({
-    required this.authRemoteDatasource, 
+    required this.authRemoteDatasource,
     required this.authLocalDatasource,
   });
   @override
@@ -19,29 +19,38 @@ class AuthRepositoryImpl implements AuthRepository {
     required LoginRequestEntity userDetails,
   }) async {
     try {
-      final token = await authRemoteDatasource.loginRequest(userDetails: LoginRequestModel(email: userDetails.email, password: userDetails.password));
-      final isUserDetailsSaved = await authLocalDatasource.saveUserDetails(token: token);
-      if(!isUserDetailsSaved){
+      final token = await authRemoteDatasource.loginRequest(
+        userDetails: LoginRequestModel(
+          email: userDetails.email,
+          password: userDetails.password,
+        ),
+      );
+      final isUserDetailsSaved = await authLocalDatasource.saveUserDetails(
+        token: token,
+      );
+      if (!isUserDetailsSaved) {
         return Left(Failure(message: "Error While saving User Details."));
       }
       return Right("Login Successfull.");
     } on ServerException catch (e) {
       return Left(Failure(message: e.message));
-    } on LocalException catch(e) {
+    } on LocalException catch (e) {
       return Left(Failure(message: e.message));
-    } catch(_) {
+    } catch (_) {
       return Left(Failure(message: "Error While Logging In User."));
     }
   }
-  
+
   @override
-  Either<Failure, String?> autoLoginRequest() {
+  Either<Failure, String> autoLoginRequest() {
     try {
       return Right(authLocalDatasource.getToken());
     } on LocalException catch (e) {
       return Left(Failure(message: e.message));
     } catch (_) {
-      return Left(Failure(message: "Error While getting Token from Local Storage."));
+      return Left(
+        Failure(message: "Error While getting Token from Local Storage."),
+      );
     }
   }
 }

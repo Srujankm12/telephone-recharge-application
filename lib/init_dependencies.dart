@@ -13,6 +13,11 @@ import 'package:telephone_recharge_application/features/authentication/login/dom
 import 'package:telephone_recharge_application/features/authentication/login/domain/usecases/login_usecase.dart';
 import 'package:telephone_recharge_application/features/authentication/login/presentation/cubit/auto_login_cubit.dart';
 import 'package:telephone_recharge_application/features/authentication/login/presentation/cubit/login_cubit.dart';
+import 'package:telephone_recharge_application/features/balance/data/datasources/balance_local_datasource.dart';
+import 'package:telephone_recharge_application/features/balance/data/repository/balance_repository_impl.dart';
+import 'package:telephone_recharge_application/features/balance/domain/repository/balance_repository.dart';
+import 'package:telephone_recharge_application/features/balance/domain/usecases/get_balance_usecase.dart';
+import 'package:telephone_recharge_application/features/balance/presentation/cubit/get_balance_cubit.dart';
 import 'package:telephone_recharge_application/features/devices/data/datasources/devices_local_datasource.dart';
 import 'package:telephone_recharge_application/features/devices/data/repository/devices_repository_impl.dart';
 import 'package:telephone_recharge_application/features/devices/domain/repository/devices_repository.dart';

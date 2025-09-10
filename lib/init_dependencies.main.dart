@@ -5,11 +5,12 @@ final serviceLocator = GetIt.instance;
 Future<void> init() async {
   await _initHive();
   await _initHttp();
+  _initBluetoothManager();
   await _requestBlePermissions();
   await _initInternetConnectivity();
   _initAuth();
+  _initCardBalance();
   _initRechargeHistory();
-  _initBluetoothManager();
   _initDevicesListCubit();
   _initCardMode();
 }
@@ -74,6 +75,22 @@ void _initAuth() async {
     )
     ..registerFactory<AutoLoginCubit>(
       () => AutoLoginCubit(autoLoginUsecase: serviceLocator()),
+    );
+}
+
+void _initCardBalance() {
+  serviceLocator
+    ..registerLazySingleton<BalanceLocalDatasource>(
+      () => BalanceLocalDatasourceImpl(bluetoothManager: serviceLocator()),
+    )
+    ..registerLazySingleton<BalanceRepository>(
+      () => BalanceRepositoryImpl(balanceLocalDatasource: serviceLocator()),
+    )
+    ..registerLazySingleton<GetBalanceUsecase>(
+      () => GetBalanceUsecase(balanceRepository: serviceLocator()),
+    )
+    ..registerFactory<GetBalanceCubit>(
+      () => GetBalanceCubit(getBalanceUsecase: serviceLocator()),
     );
 }
 

@@ -4,5 +4,5 @@ import 'package:telephone_recharge_application/features/authentication/login/dom
 
 abstract interface class AuthRepository {
   Future<Either<Failure,String>> loginRequest({required LoginRequestEntity userDetails});
-  Either<Failure,String?> autoLoginRequest();
+  Either<Failure,String> autoLoginRequest();
 }

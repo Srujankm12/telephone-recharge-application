@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:telephone_recharge_application/core/arguments/options_page_args.dart';
+import 'package:telephone_recharge_application/features/authentication/forgot_password/presentation/pages/forgot_password_otp_page.dart';
+import 'package:telephone_recharge_application/features/authentication/forgot_password/presentation/pages/forgot_password_page.dart';
+import 'package:telephone_recharge_application/features/authentication/login/presentation/cubit/auto_login_cubit.dart';
 import 'package:telephone_recharge_application/features/authentication/login/presentation/cubit/login_cubit.dart';
+import 'package:telephone_recharge_application/features/balance/presentation/cubit/get_balance_cubit.dart';
 import 'package:telephone_recharge_application/features/balance/presentation/page/balance_page.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/connect_to_ble_device_cubit.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/get_ble_devices_cubit.dart';
@@ -21,6 +25,8 @@ import '../../features/authentication/login/presentation/pages/login_page.dart';
 class GeneratedRoutes {
   static Route? onGenerate(RouteSettings settings) {
     const String login = "/login";
+    const String forgotPassword = "/forgotPassword";
+    const String forgotPasswordOtp = "/forgotPasswordOtp";
     const String devices = "/devices";
     const String options = "/options";
     const String rechargeHistory = "/rechargeHistory";
@@ -35,13 +41,25 @@ class GeneratedRoutes {
 
     final args = settings.arguments;
     switch (settings.name) {
+      // Login Page
       case login:
         return MaterialPageRoute(
-          builder: (context) => BlocProvider(
-            create: (context) => serviceLocator<LoginCubit>(),
+          builder: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => serviceLocator<LoginCubit>()),
+              BlocProvider(
+                create: (context) => serviceLocator<AutoLoginCubit>(),
+              ),
+            ],
             child: LoginPage(),
           ),
         );
+      // Forgot Password Email Page
+      case forgotPassword:
+        return MaterialPageRoute(builder: (context) => ForgotPasswordPage());
+      // Forgot Password OTP Verification Page
+      case forgotPasswordOtp:
+        return MaterialPageRoute(builder: (context) => ForgotPasswordOtpPage());
       // Device Page Route
       case devices:
         return MaterialPageRoute(
@@ -73,7 +91,12 @@ class GeneratedRoutes {
           ),
         );
       case balance:
-        return MaterialPageRoute(builder: (context) => BalancePage());
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => serviceLocator<GetBalanceCubit>(),
+            child: BalancePage(),
+          ),
+        );
       case recharge:
         return MaterialPageRoute(builder: (context) => RechargePage());
       case changeMode:
