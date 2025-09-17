@@ -5,14 +5,14 @@ sealed class InitCardFreeToDialState {}
 
 final class InitCardFreeToDialInitial extends InitCardFreeToDialState {}
 
-final class InitCardFreeToDialSuccessState extends InitCardFreeToDialState{
+final class InitCardFreeToDialSuccessState extends InitCardFreeToDialState {
   final String message;
   InitCardFreeToDialSuccessState({required this.message});
 }
 
-final class InitCardFreeToDialFailureState extends InitCardFreeToDialState{
+final class InitCardFreeToDialFailureState extends InitCardFreeToDialState {
   final String message;
   InitCardFreeToDialFailureState({required this.message});
 }
 
-final class InitCardFreeToDialLoadingState extends InitCardFreeToDialState{}
+final class InitCardFreeToDialLoadingState extends InitCardFreeToDialState {}

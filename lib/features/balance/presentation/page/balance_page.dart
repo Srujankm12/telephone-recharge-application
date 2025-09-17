@@ -16,28 +16,40 @@ class BalancePage extends StatefulWidget {
 class _BalancePageState extends State<BalancePage> {
   @override
   void initState() {
-    context.read<GetBalanceCubit>().getBalance();
     super.initState();
+    // load balance immediately
+    context.read<GetBalanceCubit>().getBalance();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Balance"),
+        title: const Text("Balance"),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.refresh_rounded)),
+          IconButton(
+            onPressed: () {
+              context.read<GetBalanceCubit>().getBalance();
+            },
+            icon: const Icon(Icons.refresh_rounded),
+          ),
         ],
       ),
       body: BlocBuilder<GetBalanceCubit, GetBalanceState>(
         builder: (context, state) {
+          if (state is GetBalanceInitial) {
+            return const Center(child: Text("Fetching balance..."));
+          }
+          if (state is GetBalanceLoadingState) {
+            return const BalanceLoadingWidget();
+          }
           if (state is GetBalanceSuccessState) {
             return BalanceSuccessWidget(amount: state.balance);
           }
           if (state is GetBalanceFailureState) {
             return BalanceFailureWidget();
           }
-          return BalanceLoadingWidget();
+          return const SizedBox.shrink();
         },
       ),
       bottomNavigationBar: BlocBuilder<GetBalanceCubit, GetBalanceState>(
@@ -57,7 +69,7 @@ class _BalancePageState extends State<BalancePage> {
                       },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.blue,
-                  shape: RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero,
                   ),
                 ),
@@ -71,7 +83,7 @@ class _BalancePageState extends State<BalancePage> {
               ),
             );
           }
-          return Container();
+          return const SizedBox.shrink();
         },
       ),
     );

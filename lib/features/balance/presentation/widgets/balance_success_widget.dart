@@ -26,7 +26,7 @@ class BalanceSuccessWidget extends StatelessWidget {
             ).textTheme.labelLarge?.copyWith(color: AppColors.grey),
           ),
           SizedBox(height: 80),
-          Text("₹100.00", style: Theme.of(context).textTheme.headlineLarge),
+          Text("₹$amount", style: Theme.of(context).textTheme.headlineLarge),
         ],
       ),
     );

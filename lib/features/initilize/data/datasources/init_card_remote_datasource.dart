@@ -8,7 +8,7 @@ import 'package:telephone_recharge_application/features/initilize/data/models/us
 
 abstract interface class InitCardRemoteDatasource {
   Future<bool> checkInternetConnection();
-  Future<String> deductAmountFromDatabase({
+  Future<bool> deductAmountFromDatabase({
     required UserCredentialsModel userCredentials,
   });
 }
@@ -21,12 +21,14 @@ class InitCardRemoteDatasourceImpl implements InitCardRemoteDatasource {
     required this.connection,
   });
   @override
-  Future<String> deductAmountFromDatabase({
+  Future<bool> deductAmountFromDatabase({
     required UserCredentialsModel userCredentials,
   }) async {
     try {
       final jsonResponse = await client.post(
-        Uri.parse("${HttpRoutes.deductAmount}/${userCredentials.collegeId}/${userCredentials.machineId}"),
+        Uri.parse(
+          "${HttpRoutes.deductAmount}/${userCredentials.collegeId}/${userCredentials.machineId}",
+        ),
         body: jsonEncode({
           "user_id": userCredentials.userId,
           "amount": userCredentials.amount,
@@ -34,10 +36,10 @@ class InitCardRemoteDatasourceImpl implements InitCardRemoteDatasource {
         headers: HttpRoutes.jsonHeaders,
       );
       final response = jsonDecode(jsonResponse.body);
-      if(jsonResponse.statusCode != 200){
+      if (jsonResponse.statusCode != 200) {
         throw ServerException(message: response["error"]);
       }
-      return response["message"];
+      return true;
     } on ServerException catch (e) {
       throw ServerException(message: e.message);
     } catch (_) {

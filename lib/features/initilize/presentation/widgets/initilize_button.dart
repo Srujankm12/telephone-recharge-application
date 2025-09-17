@@ -30,7 +30,7 @@ class InitilizeButton extends StatelessWidget {
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
-                  color: AppColors.blue,
+                  color: AppColors.white,
                   strokeCap: StrokeCap.round,
                   strokeWidth: 3,
                 ),

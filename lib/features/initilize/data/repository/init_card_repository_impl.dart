@@ -22,25 +22,30 @@ class InitCardRepositoryImpl implements InitCardRepository {
     required InitCardFreeToDialEntity cardDetails,
   }) async {
     try {
-      if(!await initCardRemoteDatasource.checkInternetConnection()){
+      if (!await initCardRemoteDatasource.checkInternetConnection()) {
         throw LocalException(message: "No Internet Connection.");
+      }
+      final UserCredentialsModel userCredentials = initCardLocalDatasource
+          .getUserCredentials(amount: cardDetails.amount);
+      final bool httpResponse = await initCardRemoteDatasource
+          .deductAmountFromDatabase(userCredentials: userCredentials);
+      if (!httpResponse) {
+        throw ServerException(message: "Card Initilization Failed.");
       }
       final response = await initCardLocalDatasource.initFreeToDialMode(
         freeToDialModeDetails: InitCardFreeToDialModel(
-          signal: cardDetails.signal, 
-          mode: cardDetails.mode, 
-          amount: cardDetails.amount
-        )
+          signal: cardDetails.signal,
+          mode: cardDetails.mode,
+          amount: cardDetails.amount,
+        ),
       );
-      if(!response){
+      if (!response) {
         throw LocalException(message: "Card Initilization Failed.");
       }
-      final UserCredentialsModel userCredentials = initCardLocalDatasource.getUserCredentials(amount: cardDetails.amount);
-      final String httpResponse = await initCardRemoteDatasource.deductAmountFromDatabase(userCredentials: userCredentials);
-      return Right(httpResponse);
+      return Right("Card Initilized Successfully.");
     } on LocalException catch (e) {
       return Left(Failure(message: e.message));
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(Failure(message: e.message));
     } catch (_) {
       return Left(Failure(message: "Exception while Initilizing Card."));
@@ -52,8 +57,15 @@ class InitCardRepositoryImpl implements InitCardRepository {
     required InitCardRestrictedEntity cardDetails,
   }) async {
     try {
-      if(!await initCardRemoteDatasource.checkInternetConnection()){
+      if (!await initCardRemoteDatasource.checkInternetConnection()) {
         throw LocalException(message: "No Internet Connection.");
+      }
+      final UserCredentialsModel userCredentials = initCardLocalDatasource
+          .getUserCredentials(amount: cardDetails.amount);
+      final bool httpResponse = await initCardRemoteDatasource
+          .deductAmountFromDatabase(userCredentials: userCredentials);
+      if (!httpResponse) {
+        throw ServerException(message: "Card Initilization Failed.");
       }
       final response = await initCardLocalDatasource.initRestrictedMode(
         restrictedModeDetails: InitCardRestrictedModel(
@@ -66,17 +78,11 @@ class InitCardRepositoryImpl implements InitCardRepository {
       if (!response) {
         throw LocalException(message: "Card Initilization Failed");
       }
-      final UserCredentialsModel userCredentials = initCardLocalDatasource.getUserCredentials(amount: cardDetails.amount);
-      final String httpResponse = await initCardRemoteDatasource.deductAmountFromDatabase(userCredentials: userCredentials);
-      return Right(httpResponse);
+      return Right("Card Initilized Successfully.");
     } on LocalException catch (e) {
-      return Left(
-        Failure(message: e.message),
-      );
-    } on ServerException catch(e) {
-      return Left(
-        Failure(message: e.message)
-      );
+      return Left(Failure(message: e.message));
+    } on ServerException catch (e) {
+      return Left(Failure(message: e.message));
     } catch (_) {
       return Left(Failure(message: "Exception while Initilizing Card."));
     }

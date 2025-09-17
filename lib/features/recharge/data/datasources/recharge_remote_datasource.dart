@@ -2,32 +2,32 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:telephone_recharge_application/core/constants/bluetooth_constants.dart';
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
 import 'package:telephone_recharge_application/core/utils/telephone_bluetooth_manager.dart';
+import 'package:telephone_recharge_application/features/recharge/data/models/recharge_model.dart';
 
-abstract interface class BalanceLocalDatasource {
-  Future<String> getCardBalance({required String signal});
+abstract interface class RechargeRemoteDatasource {
+  Future<bool> deductAmountFromDatabase({
+    required RechargeModel rechargeDetails,
+  });
 }
 
-class BalanceLocalDatasourceImpl implements BalanceLocalDatasource {
+class RechargeRemoteDatasourceImpl implements RechargeRemoteDatasource {
   final TelephoneBluetoothManager bluetoothManager;
-  BalanceLocalDatasourceImpl({required this.bluetoothManager});
-
+  RechargeRemoteDatasourceImpl({required this.bluetoothManager});
   @override
-  Future<String> getCardBalance({required String signal}) async {
+  Future<bool> deductAmountFromDatabase({
+    required RechargeModel rechargeDetails,
+  }) async {
     try {
-      if (!await bluetoothManager.checkBluetoothState()) {
-        await bluetoothManager.turnOnBluetooth();
-      }
       final service = await bluetoothManager.getTargetService(
         Guid(BluetoothConstants.serviceUuid),
       );
       final response = await bluetoothManager.writeJsonAndWaitForResponse(
         service: service,
         charUuid: Guid(BluetoothConstants.charUuid),
-        payload: {"signal": signal},
+        payload: rechargeDetails.toJson(),
       );
-      print(response);
       if (response == null) {
-        throw LocalException(message: "No Response from the Machine.");
+        throw LocalException(message: "No Response from the Device.");
       }
       if (response["error_status"] == "1") {
         throw LocalException(message: "Card Not Found.");
@@ -38,11 +38,11 @@ class BalanceLocalDatasourceImpl implements BalanceLocalDatasource {
       if (response["error_status"] == "3") {
         throw LocalException(message: "Card Read Failed.");
       }
-      return response["balance"];
+      return true;
     } on LocalException catch (e) {
       throw LocalException(message: e.message);
     } catch (_) {
-      throw LocalException(message: "Error Getting Card Balance.");
+      throw LocalException(message: "Exception in Bluetooth Communication.");
     }
   }
 }

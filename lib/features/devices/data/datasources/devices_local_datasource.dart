@@ -9,18 +9,21 @@ abstract interface class DevicesLocalDatasource {
 
 class DevicesLocalDatasourceImpl implements DevicesLocalDatasource {
   final TelephoneBluetoothManager bluetoothManager;
-
   DevicesLocalDatasourceImpl({required this.bluetoothManager});
-
   @override
   Future<Stream<List<ScanResult>>> getBleDevices() async {
     try {
-      if(await bluetoothManager.checkBluetoothState()){
+      if (!await bluetoothManager.checkBluetoothState()) {
         await bluetoothManager.turnOnBluetooth();
       }
+      if (await bluetoothManager.isConnected()) {
+        await bluetoothManager.disconnectFromDevice();
+      }
       await bluetoothManager.startScan();
+      print("hello");
       return bluetoothManager.scanResults();
-    } catch (_) {
+    } catch (e) {
+      print(e.toString());
       throw LocalException(message: "Exception in Bluetooth Communication.");
     }
   }
@@ -28,6 +31,12 @@ class DevicesLocalDatasourceImpl implements DevicesLocalDatasource {
   @override
   Future<bool> connectToBleDevice({required BluetoothDevice device}) async {
     try {
+      if (!await bluetoothManager.checkBluetoothState()) {
+        await bluetoothManager.turnOnBluetooth();
+      }
+      if (await bluetoothManager.isConnected()) {
+        await bluetoothManager.disconnectFromDevice();
+      }
       await bluetoothManager.connectToDevice(device);
       final status = await bluetoothManager.connectionStatus().firstWhere(
         (s) =>

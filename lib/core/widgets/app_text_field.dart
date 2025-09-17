@@ -8,6 +8,7 @@ class AppTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final TextEditingController controller;
   final TextInputType? keyboardType;
+  final void Function(String)? onChanged;
   const AppTextField({
     super.key,
     required this.hintText,
@@ -15,7 +16,8 @@ class AppTextField extends StatefulWidget {
     this.isPasswordField = false,
     this.validator,
     required this.controller,
-    this.keyboardType
+    this.keyboardType,
+    this.onChanged,
   });
 
   @override
@@ -38,6 +40,7 @@ class _AppTextFieldState extends State<AppTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: widget.onChanged,
       controller: widget.controller,
       obscureText: isObscure,
       cursorColor: AppColors.grey,

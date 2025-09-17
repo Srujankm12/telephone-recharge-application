@@ -167,8 +167,15 @@ void _initCardMode() async {
     ..registerLazySingleton<InitCardRestrictedUsecase>(
       () => InitCardRestrictedUsecase(initCardRepository: serviceLocator()),
     )
+    ..registerLazySingleton<InitCardFreeToDialUsecase>(
+      () => InitCardFreeToDialUsecase(initCardRepository: serviceLocator()),
+    )
     ..registerFactory<InitCardRestrictedCubit>(
       () =>
           InitCardRestrictedCubit(initCardRestrictedUsecase: serviceLocator()),
+    )
+    ..registerFactory<InitCardFreeToDialCubit>(
+      () =>
+          InitCardFreeToDialCubit(initCardFreeToDialUsecase: serviceLocator()),
     );
 }

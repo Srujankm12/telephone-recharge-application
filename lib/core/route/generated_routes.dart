@@ -10,6 +10,7 @@ import 'package:telephone_recharge_application/features/balance/presentation/pag
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/connect_to_ble_device_cubit.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/get_ble_devices_cubit.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/pages/device_page.dart';
+import 'package:telephone_recharge_application/features/initilize/presentation/cubit/init_card_free_to_dial_cubit.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/cubit/init_card_restricted_cubit.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/pages/card_mode_list_page.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/pages/free_to_dial_mode_initilization_page.dart';
@@ -120,7 +121,10 @@ class GeneratedRoutes {
         if (args is OptionsPageArgs) {
           return MaterialPageRoute(
             builder: (context) {
-              return FreeToDialModeInitilizationPage(args: args);
+              return BlocProvider(
+                create: (context) => serviceLocator<InitCardFreeToDialCubit>(),
+                child: FreeToDialModeInitilizationPage(args: args),
+              );
             },
           );
         }

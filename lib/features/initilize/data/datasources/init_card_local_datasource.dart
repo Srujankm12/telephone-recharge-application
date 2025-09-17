@@ -14,9 +14,7 @@ abstract interface class InitCardLocalDatasource {
   Future<bool> initFreeToDialMode({
     required InitCardFreeToDialModel freeToDialModeDetails,
   });
-  UserCredentialsModel getUserCredentials({
-    required String amount,
-  });
+  UserCredentialsModel getUserCredentials({required String amount});
 }
 
 class InitCardLocalDatasourceImpl implements InitCardLocalDatasource {
@@ -44,13 +42,13 @@ class InitCardLocalDatasourceImpl implements InitCardLocalDatasource {
       if (response!["error_status"] == "0") {
         return true;
       }
-      if(response["error_status"] == "1"){
+      if (response["error_status"] == "1") {
         throw LocalException(message: "Card Not Found.");
       }
-      if(response["error_status"] == "2"){
+      if (response["error_status"] == "2") {
         throw LocalException(message: "Card Authentication Failed.");
       }
-      if(response["error_status"] == "3"){
+      if (response["error_status"] == "3") {
         throw LocalException(message: "Card Write Failed.");
       }
       return false;
@@ -77,13 +75,13 @@ class InitCardLocalDatasourceImpl implements InitCardLocalDatasource {
       if (response!["error_status"] == "0") {
         return true;
       }
-      if(response["error_status"] == "1"){
+      if (response["error_status"] == "1") {
         throw LocalException(message: "Card Not Found.");
       }
-      if(response["error_status"] == "2"){
+      if (response["error_status"] == "2") {
         throw LocalException(message: "Card Authentication Failed.");
       }
-      if(response["error_status"] == "3"){
+      if (response["error_status"] == "3") {
         throw LocalException(message: "Card Write Failed.");
       }
       return false;
@@ -93,23 +91,21 @@ class InitCardLocalDatasourceImpl implements InitCardLocalDatasource {
       throw LocalException(message: "Error while Initilizing.");
     }
   }
-  
+
   @override
-  UserCredentialsModel getUserCredentials({
-    required String amount,
-  }) {
+  UserCredentialsModel getUserCredentials({required String amount}) {
     try {
       final String? userId = box.get("user_id");
       final String? machineId = box.get("machine_id");
       final String? collegeId = box.get("college_id");
-      if(userId == null || machineId == null || collegeId == null){
+      if (userId == null || machineId == null || collegeId == null) {
         throw LocalException(message: "Invalid User Credentials.");
       }
       return UserCredentialsModel(
-        userId: userId, 
-        machineId: machineId, 
-        collegeId: collegeId, 
-        amount: amount
+        userId: userId,
+        machineId: machineId,
+        collegeId: collegeId,
+        amount: amount,
       );
     } on LocalException catch (e) {
       throw LocalException(message: e.message);

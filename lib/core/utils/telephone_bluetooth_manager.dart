@@ -46,6 +46,11 @@ class TelephoneBluetoothManager {
     return _connectedDevice!.connectionState;
   }
 
+  Future<bool> isConnected() async {
+    final status = await _connectedDevice?.connectionState.first;
+    return status == BluetoothConnectionState.connected;
+  }
+
   Future<BluetoothService> getTargetService(Guid serviceUuid) async {
     List<BluetoothService> services = await _connectedDevice!
         .discoverServices();
@@ -54,7 +59,7 @@ class TelephoneBluetoothManager {
 
   Future<bool> checkBluetoothState() async {
     final BluetoothAdapterState state = FlutterBluePlus.adapterStateNow;
-    if(state == BluetoothAdapterState.off){
+    if (state == BluetoothAdapterState.off) {
       return false;
     }
     return true;
@@ -90,7 +95,6 @@ class TelephoneBluetoothManager {
           if (data.isEmpty) return; // ignore empty packets
 
           final responseStr = utf8.decode(data);
-          print(responseStr);
 
           if (responseStr.trim().isEmpty) return; // ignore empty strings
 

@@ -12,7 +12,8 @@ class GetBalanceCubit extends Cubit<GetBalanceState> {
 
   Future<void> getBalance() async {
     emit(GetBalanceLoadingState());
-    final response = await _getBalanceUsecase("3");
+    await Future.delayed(Duration(seconds: 2));
+    final response = await _getBalanceUsecase("4");
     response.fold(
       (failure) {
         emit(GetBalanceFailureState(message: failure.message));
