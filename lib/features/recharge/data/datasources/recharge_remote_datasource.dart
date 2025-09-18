@@ -1,8 +1,9 @@
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:telephone_recharge_application/core/constants/bluetooth_constants.dart';
+import 'dart:convert';
+
+import 'package:telephone_recharge_application/core/constants/http_routes.dart';
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
-import 'package:telephone_recharge_application/core/utils/telephone_bluetooth_manager.dart';
 import 'package:telephone_recharge_application/features/recharge/data/models/recharge_model.dart';
+import 'package:http/http.dart' as http;
 
 abstract interface class RechargeRemoteDatasource {
   Future<bool> deductAmountFromDatabase({
@@ -11,38 +12,31 @@ abstract interface class RechargeRemoteDatasource {
 }
 
 class RechargeRemoteDatasourceImpl implements RechargeRemoteDatasource {
-  final TelephoneBluetoothManager bluetoothManager;
-  RechargeRemoteDatasourceImpl({required this.bluetoothManager});
+  final http.Client client;
+  RechargeRemoteDatasourceImpl({required this.client});
   @override
   Future<bool> deductAmountFromDatabase({
     required RechargeModel rechargeDetails,
   }) async {
     try {
-      final service = await bluetoothManager.getTargetService(
-        Guid(BluetoothConstants.serviceUuid),
+      final jsonResponse = await client.post(
+        Uri.parse(
+          "${HttpRoutes.deductAmount}/${rechargeDetails.collegeId}/${rechargeDetails.amount}",
+        ),
+        body: rechargeDetails.toHttpJson(),
+        headers: HttpRoutes.jsonHeaders,
       );
-      final response = await bluetoothManager.writeJsonAndWaitForResponse(
-        service: service,
-        charUuid: Guid(BluetoothConstants.charUuid),
-        payload: rechargeDetails.toJson(),
-      );
-      if (response == null) {
-        throw LocalException(message: "No Response from the Device.");
+      final response = jsonDecode(jsonResponse.body);
+      if (jsonResponse.statusCode != 200) {
+        throw ServerException(message: response["error"]);
       }
-      if (response["error_status"] == "1") {
-        throw LocalException(message: "Card Not Found.");
-      }
-      if (response["error_status"] == "2") {
-        throw LocalException(message: "Card Authentication Failed.");
-      }
-      if (response["error_status"] == "3") {
-        throw LocalException(message: "Card Read Failed.");
-      }
-      return true;
-    } on LocalException catch (e) {
-      throw LocalException(message: e.message);
+      return response["message"];
+    } on ServerException catch (e) {
+      throw ServerException(message: e.message);
     } catch (_) {
-      throw LocalException(message: "Exception in Bluetooth Communication.");
+      throw ServerException(
+        message: "Exception While Communicating with Server.",
+      );
     }
   }
 }
