@@ -1,4 +1,5 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:hive/hive.dart';
 import 'package:telephone_recharge_application/core/constants/bluetooth_constants.dart';
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
 import 'package:telephone_recharge_application/core/utils/telephone_bluetooth_manager.dart';
@@ -6,22 +7,35 @@ import 'package:telephone_recharge_application/features/recharge/data/models/rec
 
 abstract interface class RechargeLocalDatasource {
   Future<bool> rechargeCard({required RechargeModel rechargeDetails});
-  Future<Map<String, dynamic>> getUserCredentials();
+  RechargeModel getUserCredentials();
 }
 
 class RechargeLocalDatasourceImpl implements RechargeLocalDatasource {
   final TelephoneBluetoothManager bluetoothManager;
-  RechargeLocalDatasourceImpl({required this.bluetoothManager});
+  final Box<String> box;
+  RechargeLocalDatasourceImpl({
+    required this.bluetoothManager,
+    required this.box,
+  });
   @override
   Future<bool> rechargeCard({required RechargeModel rechargeDetails}) async {
     try {
+      if (!await bluetoothManager.checkBluetoothState()) {
+        await bluetoothManager.turnOnBluetooth();
+      }
+      if (!await bluetoothManager.isConnected()) {
+        throw LocalException(message: "Not Connected to Device.");
+      }
       final service = await bluetoothManager.getTargetService(
         Guid(BluetoothConstants.serviceUuid),
       );
       final response = await bluetoothManager.writeJsonAndWaitForResponse(
         service: service,
         charUuid: Guid(BluetoothConstants.charUuid),
-        payload: rechargeDetails.toBluetoothJson(),
+        payload: {
+          "signal": rechargeDetails.signal,
+          "amount": rechargeDetails.amount,
+        },
       );
       if (response == null) {
         throw LocalException(message: "No Response from the Device.");
@@ -39,7 +53,30 @@ class RechargeLocalDatasourceImpl implements RechargeLocalDatasource {
     } on LocalException catch (e) {
       throw LocalException(message: e.message);
     } catch (_) {
-      throw LocalException(message: "Exception in Bluetooth Communication.");
+      throw LocalException(message: "Exception with Device Communication.");
+    }
+  }
+
+  @override
+  RechargeModel getUserCredentials() {
+    try {
+      final String? userId = box.get("user_id");
+      final String? collegeId = box.get("college_id");
+      if (userId == null || collegeId == null) {
+        throw LocalException(message: "User Credentials Not Found.");
+      }
+      return RechargeModel(
+        userId: userId,
+        collegeId: collegeId,
+        amount: "",
+        signal: "",
+      );
+    } on LocalException catch (e) {
+      throw LocalException(message: e.message);
+    } catch (_) {
+      throw LocalException(
+        message: "Exception while Getting User Credentials.",
+      );
     }
   }
 }

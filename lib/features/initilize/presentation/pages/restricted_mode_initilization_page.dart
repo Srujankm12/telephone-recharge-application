@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:telephone_recharge_application/core/arguments/options_page_args.dart';
 import 'package:telephone_recharge_application/core/theme/app_colors.dart';
+import 'package:telephone_recharge_application/core/widgets/app_snackbar.dart';
 import 'package:telephone_recharge_application/core/widgets/app_text_field.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/cubit/init_card_restricted_cubit.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/widgets/initilize_button.dart';
@@ -16,8 +17,7 @@ class RestrictedModeInitilizationPage extends StatefulWidget {
       _RestrictedModeInitilizationPageState();
 }
 
-class _RestrictedModeInitilizationPageState
-    extends State<RestrictedModeInitilizationPage> {
+class _RestrictedModeInitilizationPageState extends State<RestrictedModeInitilizationPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
@@ -36,21 +36,6 @@ class _RestrictedModeInitilizationPageState
     });
   }
 
-  void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        elevation: 0,
-        content: Text(
-          message,
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(color: AppColors.white),
-        ),
-        backgroundColor: AppColors.blue,
-      ),
-    );
-  }
-
   @override
   void dispose() {
     _phoneNumberController.dispose();
@@ -63,10 +48,10 @@ class _RestrictedModeInitilizationPageState
     return BlocListener<InitCardRestrictedCubit, InitCardRestrictedState>(
       listener: (context, state) {
         if (state is InitCardRestrictedSuccessState) {
-          _showSnackBar(context, state.message);
+          AppSnackbar.showSnackBar(state.message, context);
         }
         if (state is InitCardRestrictedFailureState) {
-          _showSnackBar(context, state.message);
+          AppSnackbar.showSnackBar(state.message, context);
         }
       },
       child: Scaffold(

@@ -4,7 +4,7 @@ class HttpRoutes {
   };
   static const String _url = "https://telephone.vithsutra.com";
   static const String login = "$_url/user/login";
-  static const String deductAmount = "$_url/admin/recharge/student";
+  static const String deductAmount = "$_url/user/recharge/student";
   static const String balance = "$_url/";
   static const String rechargeHistory = "$_url/user/recharge/student/history";
 }

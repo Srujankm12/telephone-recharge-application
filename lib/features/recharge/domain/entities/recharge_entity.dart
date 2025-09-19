@@ -1,12 +1,12 @@
 class RechargeEntity {
-  final String signal;
-  final String amount;
   final String collegeId;
   final String userId;
+  final String amount;
+  final String signal;
   RechargeEntity({
-    required this.signal,
-    required this.amount,
     required this.collegeId,
     required this.userId,
+    required this.amount,
+    required this.signal,
   });
 }

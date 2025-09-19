@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
         BlocListener<AutoLoginCubit, AutoLoginState>(
           listener: (context, state) {
             if (state is AutoLoginSuccessState) {
-              Navigator.pushNamed(context, "/devices");
+              Navigator.pushReplacementNamed(context, "/devices");
             }
           },
         ),
