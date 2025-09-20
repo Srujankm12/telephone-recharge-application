@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:telephone_recharge_application/core/constants/http_constants.dart';
 import 'package:telephone_recharge_application/core/constants/http_routes.dart';
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
 import 'package:telephone_recharge_application/features/initilize/data/models/user_credentials_model.dart';
@@ -33,7 +34,7 @@ class InitCardRemoteDatasourceImpl implements InitCardRemoteDatasource {
           "user_id": userCredentials.userId,
           "amount": userCredentials.amount,
         }),
-        headers: HttpRoutes.jsonHeaders,
+        headers: HttpConstants.httpHeaders,
       );
       final response = jsonDecode(jsonResponse.body);
       if (jsonResponse.statusCode != 200) {

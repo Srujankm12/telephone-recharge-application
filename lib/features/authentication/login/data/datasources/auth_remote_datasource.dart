@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:telephone_recharge_application/core/constants/http_constants.dart';
 import 'package:telephone_recharge_application/core/constants/http_routes.dart';
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
 import 'package:telephone_recharge_application/features/authentication/login/data/models/login_request_model.dart';
@@ -18,7 +19,7 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
       final jsonResponse = await client.post(
         Uri.parse(HttpRoutes.login),
         body: userDetails.toJson(),
-        headers: HttpRoutes.jsonHeaders,
+        headers: HttpConstants.httpHeaders,
       );
       final response = jsonDecode(jsonResponse.body);
       if (jsonResponse.statusCode != 200) {

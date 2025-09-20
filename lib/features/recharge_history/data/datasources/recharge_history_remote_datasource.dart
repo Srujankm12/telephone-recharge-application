@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:telephone_recharge_application/core/constants/http_constants.dart';
 import 'package:telephone_recharge_application/core/constants/http_routes.dart';
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
 import 'package:telephone_recharge_application/features/recharge_history/data/models/recharge_history_model.dart';
@@ -22,7 +23,7 @@ class RechargeHistoryRemoteDatasourceImpl
     try {
       final jsonResponse = await client.get(
         Uri.parse("${HttpRoutes.rechargeHistory}/$userId"),
-        headers: HttpRoutes.jsonHeaders,
+        headers: HttpConstants.httpHeaders,
       );
       final response = jsonDecode(jsonResponse.body);
       print(response);

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:telephone_recharge_application/core/constants/http_constants.dart';
 import 'package:telephone_recharge_application/core/constants/http_routes.dart';
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
 import 'package:telephone_recharge_application/features/recharge/data/models/recharge_model.dart';
@@ -30,7 +31,7 @@ class RechargeRemoteDatasourceImpl implements RechargeRemoteDatasource {
           "${HttpRoutes.deductAmount}/${rechargeDetails.collegeId}/${rechargeDetails.amount}",
         ),
         body: jsonEncode(rechargeDetails),
-        headers: HttpRoutes.jsonHeaders,
+        headers: HttpConstants.httpHeaders,
       );
       final response = jsonDecode(jsonResponse.body);
       if (jsonResponse.statusCode != 200) {
