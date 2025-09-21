@@ -26,9 +26,11 @@ class RechargeHistoryRemoteDatasourceImpl
         headers: HttpConstants.httpHeaders,
       );
       final response = jsonDecode(jsonResponse.body);
-      print(response);
       if (jsonResponse.statusCode != 200) {
         throw ServerException(message: response["error"]);
+      }
+      if (response == null) {
+        throw ServerException(message: "No Response from Server.");
       }
       if (response["data"] == null) {
         throw ServerException(message: "No Recharge History to Display.");
@@ -39,9 +41,7 @@ class RechargeHistoryRemoteDatasourceImpl
     } on ServerException catch (e) {
       throw ServerException(message: e.message);
     } catch (_) {
-      throw ServerException(
-        message: "Error Getting Recharge History from Server.",
-      );
+      throw ServerException(message: "Exception in Server.");
     }
   }
 }

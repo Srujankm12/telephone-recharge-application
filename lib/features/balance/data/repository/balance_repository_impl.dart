@@ -21,7 +21,7 @@ class BalanceRepositoryImpl implements BalanceRepository {
     } on LocalException catch (e) {
       return Left(Failure(message: e.message));
     } catch (e) {
-      return Left(Failure(message: "Exception while Fetching the Balance."));
+      return Left(Failure(message: "Error in BLE operation."));
     }
   }
 }

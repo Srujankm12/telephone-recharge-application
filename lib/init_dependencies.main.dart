@@ -150,13 +150,11 @@ void _initCardMode() async {
       () => InitCardLocalDatasourceImpl(
         bluetoothManager: serviceLocator(),
         box: serviceLocator(),
+        connection: serviceLocator(),
       ),
     )
     ..registerLazySingleton<InitCardRemoteDatasource>(
-      () => InitCardRemoteDatasourceImpl(
-        client: serviceLocator(),
-        connection: serviceLocator(),
-      ),
+      () => InitCardRemoteDatasourceImpl(client: serviceLocator()),
     )
     ..registerLazySingleton<InitCardRepository>(
       () => InitCardRepositoryImpl(
@@ -164,18 +162,10 @@ void _initCardMode() async {
         initCardRemoteDatasource: serviceLocator(),
       ),
     )
-    ..registerLazySingleton<InitCardRestrictedUsecase>(
-      () => InitCardRestrictedUsecase(initCardRepository: serviceLocator()),
+    ..registerLazySingleton<InitCardUsecase>(
+      () => InitCardUsecase(initCardRepository: serviceLocator()),
     )
-    ..registerLazySingleton<InitCardFreeToDialUsecase>(
-      () => InitCardFreeToDialUsecase(initCardRepository: serviceLocator()),
-    )
-    ..registerFactory<InitCardRestrictedCubit>(
-      () =>
-          InitCardRestrictedCubit(initCardRestrictedUsecase: serviceLocator()),
-    )
-    ..registerFactory<InitCardFreeToDialCubit>(
-      () =>
-          InitCardFreeToDialCubit(initCardFreeToDialUsecase: serviceLocator()),
+    ..registerFactory<InitCardCubit>(
+      () => InitCardCubit(initCardUsecase: serviceLocator()),
     );
 }

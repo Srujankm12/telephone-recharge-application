@@ -16,10 +16,10 @@ class BalanceLocalDatasourceImpl implements BalanceLocalDatasource {
     try {
       if (!await bluetoothManager.checkBluetoothState()) {
         await bluetoothManager.turnOnBluetooth();
-        throw LocalException(message: "Bluetooth Device is Disconnected.");
+        throw LocalException(message: "Bluetooth is Turned OFF.");
       }
       if (!await bluetoothManager.isConnected()) {
-        throw LocalException(message: "Bluetooth Device is Disconnected.");
+        throw LocalException(message: "Device is Disconnected.");
       }
       final service = await bluetoothManager.getTargetService(
         Guid(BluetoothConstants.serviceUuid),
@@ -45,7 +45,7 @@ class BalanceLocalDatasourceImpl implements BalanceLocalDatasource {
     } on LocalException catch (e) {
       throw LocalException(message: e.message);
     } catch (_) {
-      throw LocalException(message: "Error Getting Card Balance.");
+      throw LocalException(message: "Exception in BLE.");
     }
   }
 }

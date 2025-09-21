@@ -26,7 +26,7 @@ class RechargeHistoryLocalDatasourceImpl
     } on LocalException catch (e) {
       throw LocalException(message: e.message);
     } catch (_) {
-      throw LocalException(message: "Error while Getting User ID from Hive.");
+      throw LocalException(message: "Exception in HIVE.");
     }
   }
 
@@ -35,9 +35,7 @@ class RechargeHistoryLocalDatasourceImpl
     try {
       return await connection.hasInternetAccess;
     } catch (e) {
-      throw LocalException(
-        message: "Error while Checking Internet Connection.",
-      );
+      throw LocalException(message: "Exception in Internet Connection.");
     }
   }
 }

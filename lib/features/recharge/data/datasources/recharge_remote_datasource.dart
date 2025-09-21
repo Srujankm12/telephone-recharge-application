@@ -28,9 +28,9 @@ class RechargeRemoteDatasourceImpl implements RechargeRemoteDatasource {
     try {
       final jsonResponse = await client.post(
         Uri.parse(
-          "${HttpRoutes.deductAmount}/${rechargeDetails.collegeId}/${rechargeDetails.amount}",
+          "${HttpRoutes.recharge}/${rechargeDetails.collegeId}/${rechargeDetails.machineId}/${rechargeDetails.userId}",
         ),
-        body: jsonEncode(rechargeDetails),
+        body: jsonEncode({"recharge_amount": rechargeDetails.amount}),
         headers: HttpConstants.httpHeaders,
       );
       final response = jsonDecode(jsonResponse.body);

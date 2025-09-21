@@ -32,9 +32,7 @@ class RechargeHistoryRepositoryImpl implements RechargeHistoryRepository {
     } on LocalException catch (e) {
       return Left(Failure(message: e.message));
     } catch (_) {
-      return Left(
-        Failure(message: "Error Occured While Fetching Details."),
-      );
+      return Left(Failure(message: "Error Occured While Fetching Details."));
     }
   }
 }

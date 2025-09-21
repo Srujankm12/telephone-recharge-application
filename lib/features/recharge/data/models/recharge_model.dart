@@ -5,6 +5,7 @@ class RechargeModel extends RechargeEntity {
     required super.signal,
     required super.amount,
     required super.collegeId,
+    required super.machineId,
     required super.userId,
   });
 }

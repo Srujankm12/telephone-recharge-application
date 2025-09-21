@@ -4,17 +4,13 @@ class GeneratedRoutes {
   static Route? onGenerate(RouteSettings settings) {
     const String landing = "/landing";
     const String login = "/login";
-    const String forgotPassword = "/forgotPassword";
-    const String forgotPasswordOtp = "/forgotPasswordOtp";
     const String devices = "/devices";
     const String options = "/options";
     const String history = "/history";
     const String balance = "/balance";
     const String recharge = "/recharge";
     const String changeMode = "/changeMode";
-    const String cardModeList = "/cardModeListPage";
-    const String initRestricted = "/InitRestricted";
-    const String initFreeToDial = "/InitFreeToDial";
+    const String initCardMode = "/initCardMode";
     const String addPhoneNumbers = "/addPhoneNumbers";
     const String changePhoneNumbers = "/changePhoneNumbers";
 
@@ -40,12 +36,6 @@ class GeneratedRoutes {
             child: LoginPage(),
           ),
         );
-      // Forgot Password Email Page
-      case forgotPassword:
-        return MaterialPageRoute(builder: (context) => ForgotPasswordPage());
-      // Forgot Password OTP Verification Page
-      case forgotPasswordOtp:
-        return MaterialPageRoute(builder: (context) => ForgotPasswordOtpPage());
       // Device Page Route
       case devices:
         return MaterialPageRoute(
@@ -83,36 +73,12 @@ class GeneratedRoutes {
             child: BalancePage(),
           ),
         );
+      case initCardMode:
+        return MaterialPageRoute(builder: (context) => InitCardPage());
       case recharge:
         return MaterialPageRoute(builder: (context) => RechargePage());
       case changeMode:
         return MaterialPageRoute(builder: (context) => ChangeModePage());
-      case cardModeList:
-        if (args is OptionsPageArgs) {
-          return MaterialPageRoute(
-            builder: (context) => CardModeListPage(args: args),
-          );
-        }
-      case initRestricted:
-        if (args is OptionsPageArgs) {
-          return MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => serviceLocator<InitCardRestrictedCubit>(),
-              child: RestrictedModeInitilizationPage(args: args),
-            ),
-          );
-        }
-      case initFreeToDial:
-        if (args is OptionsPageArgs) {
-          return MaterialPageRoute(
-            builder: (context) {
-              return BlocProvider(
-                create: (context) => serviceLocator<InitCardFreeToDialCubit>(),
-                child: FreeToDialModeInitilizationPage(args: args),
-              );
-            },
-          );
-        }
       case addPhoneNumbers:
         return MaterialPageRoute(builder: (context) => AddPhoneNumberPage());
       case changePhoneNumbers:

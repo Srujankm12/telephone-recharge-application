@@ -22,12 +22,9 @@ class InitCardRemoteDatasourceImpl implements InitCardRemoteDatasource {
     try {
       final jsonResponse = await client.post(
         Uri.parse(
-          "${HttpRoutes.deductAmount}/${userCredentials.collegeId}/${userCredentials.machineId}",
+          "${HttpRoutes.recharge}/${userCredentials.collegeId}/${userCredentials.machineId}/${userCredentials.userId}",
         ),
-        body: jsonEncode({
-          "user_id": userCredentials.userId,
-          "amount": userCredentials.amount,
-        }),
+        body: jsonEncode({"recharge_amount": userCredentials.amount}),
         headers: HttpConstants.httpHeaders,
       );
       final response = jsonDecode(jsonResponse.body);

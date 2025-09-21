@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:telephone_recharge_application/core/arguments/options_page_args.dart';
-import 'package:telephone_recharge_application/features/authentication/forgot_password/presentation/pages/forgot_password_otp_page.dart';
-import 'package:telephone_recharge_application/features/authentication/forgot_password/presentation/pages/forgot_password_page.dart';
 import 'package:telephone_recharge_application/features/authentication/login/presentation/cubit/auto_login_cubit.dart';
 import 'package:telephone_recharge_application/features/authentication/login/presentation/cubit/login_cubit.dart';
 import 'package:telephone_recharge_application/features/authentication/login/presentation/pages/landing_page.dart';
@@ -11,9 +9,7 @@ import 'package:telephone_recharge_application/features/balance/presentation/pag
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/connect_to_ble_device_cubit.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/cubit/get_ble_devices_cubit.dart';
 import 'package:telephone_recharge_application/features/devices/presentation/pages/device_page.dart';
-import 'package:telephone_recharge_application/features/initilize/presentation/pages/card_mode_list_page.dart';
-import 'package:telephone_recharge_application/features/initilize/presentation/pages/free_to_dial_mode_initilization_page.dart';
-import 'package:telephone_recharge_application/features/initilize/presentation/pages/restricted_mode_initilization_page.dart';
+import 'package:telephone_recharge_application/features/initilize/presentation/pages/init_card_page.dart';
 import 'package:telephone_recharge_application/features/mode/presentation/page/change_mode_page.dart';
 import 'package:telephone_recharge_application/features/options/presentation/pages/options_page.dart';
 import 'package:telephone_recharge_application/features/phone_number/presentation/pages/add_phone_number_page.dart';
