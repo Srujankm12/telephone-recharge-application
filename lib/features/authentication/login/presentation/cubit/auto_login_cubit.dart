@@ -6,17 +6,20 @@ part 'auto_login_state.dart';
 
 class AutoLoginCubit extends Cubit<AutoLoginState> {
   final AutoLoginUsecase _autoLoginUsecase;
-  AutoLoginCubit({
-    required AutoLoginUsecase autoLoginUsecase,
-  }) : _autoLoginUsecase = autoLoginUsecase , super(AutoLoginInitial());
+  AutoLoginCubit({required AutoLoginUsecase autoLoginUsecase})
+    : _autoLoginUsecase = autoLoginUsecase,
+      super(AutoLoginInitial());
 
   Future<void> autoLogin() async {
     emit(AutoLoginLoadingState());
     final res = await _autoLoginUsecase(null);
-    res.fold((failure){
-      emit(AutoLoginFailureState(message: failure.message));
-    }, (success){
-      emit(AutoLoginSuccessState());
-    });
+    res.fold(
+      (failure) {
+        emit(AutoLoginFailureState(message: failure.message));
+      },
+      (success) {
+        emit(AutoLoginSuccessState());
+      },
+    );
   }
 }

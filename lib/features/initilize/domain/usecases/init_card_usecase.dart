@@ -1,32 +1,29 @@
 import 'package:dartz/dartz.dart';
 import 'package:telephone_recharge_application/core/errors/failure.dart';
 import 'package:telephone_recharge_application/core/usecase/usecase.dart';
-import 'package:telephone_recharge_application/features/initilize/domain/entities/init_card_free_to_dial_entity.dart';
+import 'package:telephone_recharge_application/features/initilize/domain/entities/init_card_entity.dart';
 import 'package:telephone_recharge_application/features/initilize/domain/repository/init_card_repository.dart';
 
-class InitCardFreeToDialUsecase
-    implements Usecase<String, InitCardFreeToDialUsecaseParams> {
+class InitCardUsecase implements Usecase<String, InitCardParams> {
   final InitCardRepository initCardRepository;
-  InitCardFreeToDialUsecase({required this.initCardRepository});
+  InitCardUsecase({required this.initCardRepository});
   @override
-  Future<Either<Failure, String>> call(
-    InitCardFreeToDialUsecaseParams params,
-  ) async {
-    return await initCardRepository.initCardFreeToDial(
-      cardDetails: InitCardFreeToDialEntity(
+  Future<Either<Failure, String>> call(InitCardParams params) async {
+    return await initCardRepository.initCard(
+      cardDetails: InitCardEntity(
         signal: params.signal,
-        mode: params.mode,
         amount: params.amount,
+        mode: params.mode,
       ),
     );
   }
 }
 
-class InitCardFreeToDialUsecaseParams {
+class InitCardParams {
   final String signal;
   final String mode;
   final String amount;
-  InitCardFreeToDialUsecaseParams({
+  InitCardParams({
     required this.signal,
     required this.amount,
     required this.mode,

@@ -4,7 +4,6 @@ import 'package:telephone_recharge_application/core/arguments/options_page_args.
 import 'package:telephone_recharge_application/core/theme/app_colors.dart';
 import 'package:telephone_recharge_application/core/widgets/app_snackbar.dart';
 import 'package:telephone_recharge_application/core/widgets/app_text_field.dart';
-import 'package:telephone_recharge_application/features/initilize/presentation/cubit/init_card_free_to_dial_cubit.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/widgets/initilize_button.dart';
 
 class FreeToDialModeInitilizationPage extends StatefulWidget {

@@ -13,12 +13,13 @@ class DevicesRepositoryImpl implements DevicesRepository {
   @override
   Future<Either<Failure, Stream<List<ScanResult>>>> getBleDevices() async {
     try {
-      final Stream<List<ScanResult>> deviceStream = await devicesLocalDatasource.getBleDevices();
-      return Right(deviceStream);
+      final Stream<List<ScanResult>> devicesStream = await devicesLocalDatasource
+          .getBleDevices();
+      return Right(devicesStream);
     } on LocalException catch (e) {
       return Left(Failure(message: e.message));
     } catch (_) {
-      return Left(Failure(message: "Error in Bluetooth Communication."));
+      return Left(Failure(message: "Error in BLE Communication."));
     }
   }
 
@@ -34,7 +35,7 @@ class DevicesRepositoryImpl implements DevicesRepository {
     } on LocalException catch (e) {
       return Left(Failure(message: e.message));
     } catch (_) {
-      return Left(Failure(message: "Error in Bluetooth Communication."));
+      return Left(Failure(message: "Error in BLE Communication."));
     }
   }
 }

@@ -29,7 +29,7 @@ import 'package:telephone_recharge_application/features/initilize/data/datasourc
 import 'package:telephone_recharge_application/features/initilize/data/datasources/init_card_remote_datasource.dart';
 import 'package:telephone_recharge_application/features/initilize/data/repository/init_card_repository_impl.dart';
 import 'package:telephone_recharge_application/features/initilize/domain/repository/init_card_repository.dart';
-import 'package:telephone_recharge_application/features/initilize/domain/usecases/init_card_free_to_dial_usecase.dart';
+import 'package:telephone_recharge_application/features/initilize/domain/usecases/init_card_usecase.dart';
 import 'package:telephone_recharge_application/features/initilize/domain/usecases/init_card_restricted_usecase.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/cubit/init_card_free_to_dial_cubit.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/cubit/init_card_restricted_cubit.dart';

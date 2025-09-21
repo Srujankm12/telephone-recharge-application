@@ -1,47 +1,32 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:telephone_recharge_application/core/arguments/options_page_args.dart';
-import 'package:telephone_recharge_application/features/authentication/forgot_password/presentation/pages/forgot_password_otp_page.dart';
-import 'package:telephone_recharge_application/features/authentication/forgot_password/presentation/pages/forgot_password_page.dart';
-import 'package:telephone_recharge_application/features/authentication/login/presentation/cubit/auto_login_cubit.dart';
-import 'package:telephone_recharge_application/features/authentication/login/presentation/cubit/login_cubit.dart';
-import 'package:telephone_recharge_application/features/balance/presentation/cubit/get_balance_cubit.dart';
-import 'package:telephone_recharge_application/features/balance/presentation/page/balance_page.dart';
-import 'package:telephone_recharge_application/features/devices/presentation/cubit/connect_to_ble_device_cubit.dart';
-import 'package:telephone_recharge_application/features/devices/presentation/cubit/get_ble_devices_cubit.dart';
-import 'package:telephone_recharge_application/features/devices/presentation/pages/device_page.dart';
-import 'package:telephone_recharge_application/features/initilize/presentation/cubit/init_card_free_to_dial_cubit.dart';
-import 'package:telephone_recharge_application/features/initilize/presentation/cubit/init_card_restricted_cubit.dart';
-import 'package:telephone_recharge_application/features/initilize/presentation/pages/card_mode_list_page.dart';
-import 'package:telephone_recharge_application/features/initilize/presentation/pages/free_to_dial_mode_initilization_page.dart';
-import 'package:telephone_recharge_application/features/initilize/presentation/pages/restricted_mode_initilization_page.dart';
-import 'package:telephone_recharge_application/features/mode/presentation/page/change_mode_page.dart';
-import 'package:telephone_recharge_application/features/options/presentation/pages/options_page.dart';
-import 'package:telephone_recharge_application/features/recharge/presentation/page/recharge_page.dart';
-import 'package:telephone_recharge_application/features/recharge_history/presentation/cubit/get_recharge_history_cubit.dart';
-import 'package:telephone_recharge_application/features/recharge_history/presentation/page/recharge_history_page.dart';
-import 'package:telephone_recharge_application/init_dependencies.dart';
-import '../../features/authentication/login/presentation/pages/login_page.dart';
+part of 'generated_routes_import.dart';
 
 class GeneratedRoutes {
   static Route? onGenerate(RouteSettings settings) {
+    const String landing = "/landing";
     const String login = "/login";
     const String forgotPassword = "/forgotPassword";
     const String forgotPasswordOtp = "/forgotPasswordOtp";
     const String devices = "/devices";
     const String options = "/options";
-    const String rechargeHistory = "/rechargeHistory";
+    const String history = "/history";
     const String balance = "/balance";
     const String recharge = "/recharge";
     const String changeMode = "/changeMode";
-    const String cardModeListPage = "/cardModeListPage";
-    const String restrictedModeInitilizationPage =
-        "/restrictedModeInitilizationPage";
-    const String freeToDialModeInitilizationPage =
-        "/freeToDialModeInitilizationPage";
+    const String cardModeList = "/cardModeListPage";
+    const String initRestricted = "/InitRestricted";
+    const String initFreeToDial = "/InitFreeToDial";
+    const String addPhoneNumbers = "/addPhoneNumbers";
+    const String changePhoneNumbers = "/changePhoneNumbers";
 
     final args = settings.arguments;
     switch (settings.name) {
+      case landing:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => serviceLocator<AutoLoginCubit>(),
+            child: LandingPage(),
+          ),
+        );
       // Login Page
       case login:
         return MaterialPageRoute(
@@ -84,7 +69,7 @@ class GeneratedRoutes {
           );
         }
       // Recharge History Page Route
-      case rechargeHistory:
+      case history:
         return MaterialPageRoute(
           builder: (context) => BlocProvider(
             create: (context) => serviceLocator<GetRechargeHistoryCubit>(),
@@ -102,13 +87,13 @@ class GeneratedRoutes {
         return MaterialPageRoute(builder: (context) => RechargePage());
       case changeMode:
         return MaterialPageRoute(builder: (context) => ChangeModePage());
-      case cardModeListPage:
+      case cardModeList:
         if (args is OptionsPageArgs) {
           return MaterialPageRoute(
             builder: (context) => CardModeListPage(args: args),
           );
         }
-      case restrictedModeInitilizationPage:
+      case initRestricted:
         if (args is OptionsPageArgs) {
           return MaterialPageRoute(
             builder: (context) => BlocProvider(
@@ -117,7 +102,7 @@ class GeneratedRoutes {
             ),
           );
         }
-      case freeToDialModeInitilizationPage:
+      case initFreeToDial:
         if (args is OptionsPageArgs) {
           return MaterialPageRoute(
             builder: (context) {
@@ -128,6 +113,10 @@ class GeneratedRoutes {
             },
           );
         }
+      case addPhoneNumbers:
+        return MaterialPageRoute(builder: (context) => AddPhoneNumberPage());
+      case changePhoneNumbers:
+        return MaterialPageRoute(builder: (context) => ChangePhoneNumberPage());
       default:
         return null;
     }

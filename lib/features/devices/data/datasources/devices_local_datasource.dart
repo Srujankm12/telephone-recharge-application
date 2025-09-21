@@ -20,11 +20,9 @@ class DevicesLocalDatasourceImpl implements DevicesLocalDatasource {
         await bluetoothManager.disconnectFromDevice();
       }
       await bluetoothManager.startScan();
-      print("hello");
       return bluetoothManager.scanResults();
     } catch (e) {
-      print(e.toString());
-      throw LocalException(message: "Exception in Bluetooth Communication.");
+      throw LocalException(message: "Exception in BLE.");
     }
   }
 
@@ -45,7 +43,7 @@ class DevicesLocalDatasourceImpl implements DevicesLocalDatasource {
       );
       return status == BluetoothConnectionState.connected;
     } catch (_) {
-      throw LocalException(message: "Exception in Bluetooth Communication.");
+      throw LocalException(message: "Exception in BLE.");
     }
   }
 }

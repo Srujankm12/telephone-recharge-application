@@ -1,10 +1,10 @@
-class InitCardFreeToDialEntity {
+class InitCardEntity {
   final String signal;
   final String mode;
   final String amount;
-  InitCardFreeToDialEntity({
+  InitCardEntity({
     required this.signal,
-    required this.mode,
     required this.amount,
+    required this.mode,
   });
 }

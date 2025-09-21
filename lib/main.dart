@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:telephone_recharge_application/core/route/generated_routes.dart";
+import "package:telephone_recharge_application/core/route/generated_routes_import.dart";
 import "package:telephone_recharge_application/core/theme/app_theme.dart";
 import "package:telephone_recharge_application/init_dependencies.dart";
 
@@ -20,7 +20,7 @@ class TelephoneRechargeApplication extends StatelessWidget {
       theme: AppTheme.theme,
       darkTheme: AppTheme.theme,
       onGenerateRoute: GeneratedRoutes.onGenerate,
-      initialRoute: "/login",
+      initialRoute: "/landing",
     );
   }
 }
