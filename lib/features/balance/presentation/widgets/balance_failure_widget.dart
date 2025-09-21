@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:telephone_recharge_application/core/theme/app_colors.dart';
 
 class BalanceFailureWidget extends StatelessWidget {
-  const BalanceFailureWidget({super.key});
+  final String message;
+  const BalanceFailureWidget({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class BalanceFailureWidget extends StatelessWidget {
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           Text(
-            "Failed to Check Balance",
+            message,
             style: Theme.of(
               context,
             ).textTheme.labelLarge?.copyWith(color: AppColors.grey),

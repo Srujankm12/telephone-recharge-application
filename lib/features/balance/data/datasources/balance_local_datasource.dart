@@ -16,6 +16,10 @@ class BalanceLocalDatasourceImpl implements BalanceLocalDatasource {
     try {
       if (!await bluetoothManager.checkBluetoothState()) {
         await bluetoothManager.turnOnBluetooth();
+        throw LocalException(message: "Bluetooth Device is Disconnected.");
+      }
+      if (!await bluetoothManager.isConnected()) {
+        throw LocalException(message: "Bluetooth Device is Disconnected.");
       }
       final service = await bluetoothManager.getTargetService(
         Guid(BluetoothConstants.serviceUuid),
@@ -25,7 +29,6 @@ class BalanceLocalDatasourceImpl implements BalanceLocalDatasource {
         charUuid: Guid(BluetoothConstants.charUuid),
         payload: {"signal": signal},
       );
-      print(response);
       if (response == null) {
         throw LocalException(message: "No Response from the Machine.");
       }

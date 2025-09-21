@@ -76,31 +76,23 @@ class TelephoneBluetoothManager {
     Duration timeout = const Duration(seconds: 5),
   }) async {
     try {
-      // 1. Get the characteristic
       final characteristic = service.characteristics.firstWhere(
         (c) =>
             c.uuid == charUuid && (c.properties.write || c.properties.notify),
       );
-
-      // 2. Enable notifications
       await characteristic.setNotifyValue(true);
-
-      // 3. Setup completer to wait for response
       final completer = Completer<Map<String, dynamic>?>();
-      final requestJson = jsonEncode(payload); // store request string
-
-      // 4. Listen for incoming notifications
+      final requestJson = jsonEncode(payload);
       final sub = characteristic.lastValueStream.listen((data) {
         try {
-          if (data.isEmpty) return; // ignore empty packets
+          if (data.isEmpty) return;
 
           final responseStr = utf8.decode(data);
 
-          if (responseStr.trim().isEmpty) return; // ignore empty strings
+          if (responseStr.trim().isEmpty) return;
 
           final responseJson = jsonDecode(responseStr) as Map<String, dynamic>;
 
-          // Ignore echoed request
           if (responseStr == requestJson) return;
 
           if (!completer.isCompleted) {
@@ -112,20 +104,13 @@ class TelephoneBluetoothManager {
           }
         }
       });
-
-      // 5. Write JSON request
       final dataToSend = utf8.encode(requestJson);
       await characteristic.write(dataToSend, withoutResponse: false);
-
-      // 6. Wait for response or timeout
       final result = await completer.future.timeout(
         timeout,
         onTimeout: () => null,
       );
-
-      // 7. Cleanup
       await sub.cancel();
-
       return result;
     } catch (e) {
       throw Exception({"message": "exception in BLE communication"});

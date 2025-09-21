@@ -131,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(height: 20),
                     AppTextField(
-                      hintText: "password",
+                      hintText: "Password",
                       icon: Icons.password,
                       isPasswordField: true,
                       controller: _passwordController,

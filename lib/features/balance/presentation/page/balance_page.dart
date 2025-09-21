@@ -47,7 +47,7 @@ class _BalancePageState extends State<BalancePage> {
             return BalanceSuccessWidget(amount: state.balance);
           }
           if (state is GetBalanceFailureState) {
-            return BalanceFailureWidget();
+            return BalanceFailureWidget(message: state.message);
           }
           return const SizedBox.shrink();
         },
@@ -57,7 +57,7 @@ class _BalancePageState extends State<BalancePage> {
           if (state is GetBalanceSuccessState ||
               state is GetBalanceFailureState) {
             return SizedBox(
-              height: 80,
+              height: 60,
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: state is GetBalanceSuccessState
