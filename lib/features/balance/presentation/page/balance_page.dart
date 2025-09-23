@@ -56,28 +56,30 @@ class _BalancePageState extends State<BalancePage> {
         builder: (context, state) {
           if (state is GetBalanceSuccessState ||
               state is GetBalanceFailureState) {
-            return SizedBox(
-              height: 60,
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: state is GetBalanceSuccessState
-                    ? () {
-                        Navigator.pop(context);
-                      }
-                    : () {
-                        context.read<GetBalanceCubit>().getBalance();
-                      },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.blue,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
+            return SafeArea(
+              child: SizedBox(
+                height: 60,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: state is GetBalanceSuccessState
+                      ? () {
+                          Navigator.pop(context);
+                        }
+                      : () {
+                          context.read<GetBalanceCubit>().getBalance();
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.blue,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    ),
                   ),
-                ),
-                child: Text(
-                  state is GetBalanceSuccessState ? "Done" : "Try Again",
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: AppColors.white,
-                    fontWeight: FontWeight.w600,
+                  child: Text(
+                    state is GetBalanceSuccessState ? "Done" : "Try Again",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),

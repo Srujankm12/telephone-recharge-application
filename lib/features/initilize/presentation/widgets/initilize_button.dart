@@ -23,13 +23,19 @@ class _InitilizeButtonState extends State<InitilizeButton> {
           height: 20,
           child: CircularProgressIndicator(
             strokeCap: StrokeCap.round,
-            color: AppColors.white,
+            color: AppColors.blue,
             strokeWidth: 3,
           ),
         ),
       );
     }
-    return Text("Initilize", style: Theme.of(context).textTheme.titleLarge);
+    return Text(
+      "Initilize",
+      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+        color: AppColors.white,
+        fontWeight: FontWeight.w600,
+      ),
+    );
   }
 
   VoidCallback? _buttonState(VoidCallback? callback) {
@@ -40,19 +46,18 @@ class _InitilizeButtonState extends State<InitilizeButton> {
   ButtonStyle? _buttonStyle() {
     return ElevatedButton.styleFrom(
       backgroundColor: AppColors.blue,
-      fixedSize: Size(MediaQuery.of(context).size.width, 40),
+      fixedSize: Size(MediaQuery.of(context).size.width, 55),
       foregroundColor: AppColors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ElevatedButton(
-        onPressed: _buttonState(widget.onPressed),
-        style: _buttonStyle(),
-        child: _buttonWidget(widget.isLoading),
-      ),
+    return ElevatedButton(
+      onPressed: widget.isLoading ? null : _buttonState(widget.onPressed),
+      style: _buttonStyle(),
+      child: _buttonWidget(widget.isLoading),
     );
   }
 }

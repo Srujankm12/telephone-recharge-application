@@ -19,6 +19,9 @@ class AuthRepositoryImpl implements AuthRepository {
     required LoginRequestEntity userDetails,
   }) async {
     try {
+      if (!await authLocalDatasource.checkInternetConnection()) {
+        throw LocalException(message: "No Internet Connection.");
+      }
       final token = await authRemoteDatasource.loginRequest(
         userDetails: LoginRequestModel(
           email: userDetails.email,
@@ -29,7 +32,7 @@ class AuthRepositoryImpl implements AuthRepository {
         token: token,
       );
       if (!isUserDetailsSaved) {
-        return Left(Failure(message: "Error While saving User Details."));
+        return Left(Failure(message: "Error in Hive."));
       }
       return Right("Login Successfull.");
     } on ServerException catch (e) {

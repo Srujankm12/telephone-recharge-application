@@ -19,7 +19,7 @@ class RechargeRepositoryImpl implements RechargeRepository {
     required String amount,
   }) async {
     try {
-      if (!await rechargeRemoteDatasource.checkInternetConnection()) {
+      if (!await rechargeLocalDatasource.checkInternetConnection()) {
         throw ServerException(message: "No Internet Connection.");
       }
       final userCredentials = rechargeLocalDatasource.getUserCredentials();
@@ -27,6 +27,7 @@ class RechargeRepositoryImpl implements RechargeRepository {
         rechargeDetails: RechargeModel(
           signal: signal,
           amount: amount,
+          machineId: userCredentials.machineId,
           collegeId: userCredentials.collegeId,
           userId: userCredentials.userId,
         ),
@@ -39,6 +40,7 @@ class RechargeRepositoryImpl implements RechargeRepository {
             rechargeDetails: RechargeModel(
               signal: signal,
               amount: amount,
+              machineId: userCredentials.machineId,
               collegeId: userCredentials.collegeId,
               userId: userCredentials.userId,
             ),

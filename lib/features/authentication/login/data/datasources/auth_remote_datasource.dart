@@ -22,6 +22,9 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
         headers: HttpConstants.httpHeaders,
       );
       final response = jsonDecode(jsonResponse.body);
+      if (response == null) {
+        throw ServerException(message: "No Response from the Server.");
+      }
       if (jsonResponse.statusCode != 200) {
         throw ServerException(message: response["error"]);
       }
@@ -29,7 +32,7 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
     } on ServerException catch (e) {
       throw ServerException(message: e.message);
     } catch (_) {
-      throw ServerException(message: "Error while Logging in by Server.");
+      throw ServerException(message: "Exception in Server.");
     }
   }
 }

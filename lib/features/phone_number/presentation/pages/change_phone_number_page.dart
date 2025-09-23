@@ -55,7 +55,7 @@ class _ChangePhoneNumberPageState extends State<ChangePhoneNumberPage> {
         child: Form(
           key: _formKey,
           child: Padding(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.symmetric(horizontal: 15),
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -64,29 +64,40 @@ class _ChangePhoneNumberPageState extends State<ChangePhoneNumberPage> {
                   SizedBox(height: 10),
                   Text(
                     "Enter the Phone Numbers Below.",
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                  SizedBox(height: 5),
-                  Text("Please Enter 3 Valid Phone Numbers."),
-                  SizedBox(height: 15),
+                  Text(
+                    "Please Enter 3 Valid Phone Numbers.",
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelLarge?.copyWith(color: AppColors.grey),
+                  ),
+                  SizedBox(height: 20),
                   PhoneNumberTextField(
                     hintText: "Phone Number",
                     leading: Icons.phone_iphone_rounded,
-                    onPressed: () {
-                      _addPhoneNumbersToList(
-                        phoneNumber: _phoneNumberController.text,
-                      );
-                      _clearPhoneNumberTextField();
-                    },
+                    onPressed: _phoneNumbers.length == 3
+                        ? null
+                        : () {
+                            _addPhoneNumbersToList(
+                              phoneNumber: _phoneNumberController.text,
+                            );
+                            _clearPhoneNumberTextField();
+                          },
                     validator: _phoneNumberValidator,
                     controller: _phoneNumberController,
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    "Phone Numbers",
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: AppColors.black,
-                      fontWeight: FontWeight.w600,
+                  Align(
+                    alignment: Alignment(-1, 0),
+                    child: Text(
+                      "Phone Numbers",
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: AppColors.black,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                   SizedBox(height: 5),
@@ -110,9 +121,11 @@ class _ChangePhoneNumberPageState extends State<ChangePhoneNumberPage> {
         ),
       ),
       bottomSheet: PhoneNumberSubmitButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {}
-        },
+        onPressed: _phoneNumbers.length == 3
+            ? () {
+                if (_formKey.currentState!.validate()) {}
+              }
+            : null,
       ),
     );
   }

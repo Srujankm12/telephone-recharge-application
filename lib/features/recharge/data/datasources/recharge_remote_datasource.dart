@@ -34,6 +34,9 @@ class RechargeRemoteDatasourceImpl implements RechargeRemoteDatasource {
         headers: HttpConstants.httpHeaders,
       );
       final response = jsonDecode(jsonResponse.body);
+      if (response == null) {
+        throw ServerException(message: "No Response from the Server.");
+      }
       if (jsonResponse.statusCode != 200) {
         throw ServerException(message: response["error"]);
       }
@@ -41,9 +44,7 @@ class RechargeRemoteDatasourceImpl implements RechargeRemoteDatasource {
     } on ServerException catch (e) {
       throw ServerException(message: e.message);
     } catch (_) {
-      throw ServerException(
-        message: "Exception While Communicating with Server.",
-      );
+      throw ServerException(message: "Exception in Server.");
     }
   }
 
@@ -52,9 +53,7 @@ class RechargeRemoteDatasourceImpl implements RechargeRemoteDatasource {
     try {
       return await connection.hasInternetAccess;
     } catch (e) {
-      throw ServerException(
-        message: "Exception while Checking Internet Connection.",
-      );
+      throw ServerException(message: "Exception in Internet Connection.");
     }
   }
 }

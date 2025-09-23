@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:telephone_recharge_application/core/theme/app_colors.dart';
 import 'package:telephone_recharge_application/core/widgets/app_text_field.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/widgets/initilize_button.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/widgets/radio_buttons.dart';
@@ -27,7 +28,7 @@ class _InitCardPageState extends State<InitCardPage> {
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.symmetric(horizontal: 15),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -35,21 +36,30 @@ class _InitCardPageState extends State<InitCardPage> {
                 SizedBox(height: 20),
                 Text(
                   "Enter Initial Recharge Amount",
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 5),
-                Text("This amount is for initial card balance."),
-                SizedBox(height: 10),
+                Text(
+                  "This amount is for initial card balance.",
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(color: AppColors.grey),
+                ),
+                SizedBox(height: 20),
                 AppTextField(
                   hintText: "Amount",
                   icon: Icons.currency_rupee_rounded,
                   controller: _amountController,
+                  keyboardType: TextInputType.number,
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 20),
                 RadioButtons(
                   selectedValue: _cardMode,
                   onChanged: (val) {
-                    _cardMode = val;
+                    setState(() {
+                      _cardMode = val;
+                    });
                   },
                 ),
               ],
@@ -57,7 +67,9 @@ class _InitCardPageState extends State<InitCardPage> {
           ),
         ),
       ),
-      bottomSheet: InitilizeButton(onPressed: () {}),
+      bottomSheet: SafeArea(
+        child: InitilizeButton(onPressed: () {}, isLoading: true),
+      ),
     );
   }
 }

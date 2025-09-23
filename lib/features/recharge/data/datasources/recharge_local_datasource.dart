@@ -1,5 +1,6 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hive/hive.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:telephone_recharge_application/core/constants/bluetooth_constants.dart';
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
 import 'package:telephone_recharge_application/core/utils/telephone_bluetooth_manager.dart';
@@ -8,14 +9,17 @@ import 'package:telephone_recharge_application/features/recharge/data/models/rec
 abstract interface class RechargeLocalDatasource {
   Future<bool> rechargeCard({required RechargeModel rechargeDetails});
   RechargeModel getUserCredentials();
+  Future<bool> checkInternetConnection();
 }
 
 class RechargeLocalDatasourceImpl implements RechargeLocalDatasource {
   final TelephoneBluetoothManager bluetoothManager;
   final Box<String> box;
+  final InternetConnection connection;
   RechargeLocalDatasourceImpl({
     required this.bluetoothManager,
     required this.box,
+    required this.connection,
   });
   @override
   Future<bool> rechargeCard({required RechargeModel rechargeDetails}) async {
@@ -62,12 +66,14 @@ class RechargeLocalDatasourceImpl implements RechargeLocalDatasource {
     try {
       final String? userId = box.get("user_id");
       final String? collegeId = box.get("college_id");
-      if (userId == null || collegeId == null) {
+      final String? machineId = box.get("machine_id");
+      if (userId == null || collegeId == null || machineId == null) {
         throw LocalException(message: "User Credentials Not Found.");
       }
       return RechargeModel(
         userId: userId,
         collegeId: collegeId,
+        machineId: machineId,
         amount: "",
         signal: "",
       );
@@ -78,5 +84,11 @@ class RechargeLocalDatasourceImpl implements RechargeLocalDatasource {
         message: "Exception while Getting User Credentials.",
       );
     }
+  }
+
+  @override
+  Future<bool> checkInternetConnection() {
+    // TODO: implement checkInternetConnection
+    throw UnimplementedError();
   }
 }

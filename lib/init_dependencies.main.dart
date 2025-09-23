@@ -56,7 +56,10 @@ void _initAuth() async {
       () => AuthRemoteDatasourceImpl(client: serviceLocator()),
     )
     ..registerLazySingleton<AuthLocalDatasource>(
-      () => AuthLocalDatasourceImpl(box: serviceLocator()),
+      () => AuthLocalDatasourceImpl(
+        box: serviceLocator(),
+        connection: serviceLocator(),
+      ),
     )
     ..registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(

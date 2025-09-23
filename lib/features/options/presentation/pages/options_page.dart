@@ -44,7 +44,7 @@ class _OptionsPageState extends State<OptionsPage> {
               onPressed: () {
                 Navigator.pushNamed(
                   context,
-                  "/cardModeListPage",
+                  "/initCardMode",
                   arguments: OptionsPageArgs(device: widget.args.device),
                 );
               },
@@ -85,6 +85,13 @@ class _OptionsPageState extends State<OptionsPage> {
                   icon: Icons.history_rounded,
                   onPressed: () {
                     Navigator.pushNamed(context, "/rechargeHistory");
+                  },
+                ),
+                OptionsGridCard(
+                  title: "Phone Number",
+                  icon: Icons.phone_rounded,
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/");
                   },
                 ),
               ],

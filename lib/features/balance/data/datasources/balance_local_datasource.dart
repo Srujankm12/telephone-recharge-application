@@ -15,7 +15,6 @@ class BalanceLocalDatasourceImpl implements BalanceLocalDatasource {
   Future<String> getCardBalance({required String signal}) async {
     try {
       if (!await bluetoothManager.checkBluetoothState()) {
-        await bluetoothManager.turnOnBluetooth();
         throw LocalException(message: "Bluetooth is Turned OFF.");
       }
       if (!await bluetoothManager.isConnected()) {
@@ -30,7 +29,7 @@ class BalanceLocalDatasourceImpl implements BalanceLocalDatasource {
         payload: {"signal": signal},
       );
       if (response == null) {
-        throw LocalException(message: "No Response from the Machine.");
+        throw LocalException(message: "No Response from the Device.");
       }
       if (response["error_status"] == "1") {
         throw LocalException(message: "Card Not Found.");
