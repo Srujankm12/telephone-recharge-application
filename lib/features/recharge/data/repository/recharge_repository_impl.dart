@@ -3,7 +3,6 @@ import 'package:telephone_recharge_application/core/errors/exceptions.dart';
 import 'package:telephone_recharge_application/core/errors/failure.dart';
 import 'package:telephone_recharge_application/features/recharge/data/datasources/recharge_local_datasource.dart';
 import 'package:telephone_recharge_application/features/recharge/data/datasources/recharge_remote_datasource.dart';
-import 'package:telephone_recharge_application/features/recharge/data/models/recharge_model.dart';
 import 'package:telephone_recharge_application/features/recharge/domain/repository/recharge_repository.dart';
 
 class RechargeRepositoryImpl implements RechargeRepository {
@@ -22,31 +21,22 @@ class RechargeRepositoryImpl implements RechargeRepository {
       if (!await rechargeLocalDatasource.checkInternetConnection()) {
         throw ServerException(message: "No Internet Connection.");
       }
-      final userCredentials = rechargeLocalDatasource.getUserCredentials();
+      final userCredentials = rechargeLocalDatasource.getUserCredentials(
+        signal: signal,
+        amount: amount,
+      );
       final bluetoothResponse = await rechargeLocalDatasource.rechargeCard(
-        rechargeDetails: RechargeModel(
-          signal: signal,
-          amount: amount,
-          machineId: userCredentials.machineId,
-          collegeId: userCredentials.collegeId,
-          userId: userCredentials.userId,
-        ),
+        rechargeDetails: userCredentials,
       );
       if (!bluetoothResponse) {
-        throw LocalException(message: "Error In Bluetooth Communication.");
+        throw LocalException(message: "Error in BLE.");
       }
       final httpResponse = await rechargeRemoteDatasource
           .deductAmountFromDatabase(
-            rechargeDetails: RechargeModel(
-              signal: signal,
-              amount: amount,
-              machineId: userCredentials.machineId,
-              collegeId: userCredentials.collegeId,
-              userId: userCredentials.userId,
-            ),
+            rechargeDetails: userCredentials,
           );
       if (!httpResponse) {
-        throw ServerException(message: "Error In Server Communication.");
+        throw ServerException(message: "Error in Server.");
       }
       return Right("Recharge Successfull.");
     } on LocalException catch (e) {

@@ -8,7 +8,10 @@ import 'package:telephone_recharge_application/features/recharge/data/models/rec
 
 abstract interface class RechargeLocalDatasource {
   Future<bool> rechargeCard({required RechargeModel rechargeDetails});
-  RechargeModel getUserCredentials();
+  RechargeModel getUserCredentials({
+    required String signal,
+    required String amount,
+  });
   Future<bool> checkInternetConnection();
 }
 
@@ -25,7 +28,7 @@ class RechargeLocalDatasourceImpl implements RechargeLocalDatasource {
   Future<bool> rechargeCard({required RechargeModel rechargeDetails}) async {
     try {
       if (!await bluetoothManager.checkBluetoothState()) {
-        await bluetoothManager.turnOnBluetooth();
+        throw LocalException(message: "Bluetooth is Turned OFF.");
       }
       if (!await bluetoothManager.isConnected()) {
         throw LocalException(message: "Not Connected to Device.");
@@ -62,7 +65,10 @@ class RechargeLocalDatasourceImpl implements RechargeLocalDatasource {
   }
 
   @override
-  RechargeModel getUserCredentials() {
+  RechargeModel getUserCredentials({
+    required String signal,
+    required String amount,
+  }) {
     try {
       final String? userId = box.get("user_id");
       final String? collegeId = box.get("college_id");
@@ -74,8 +80,8 @@ class RechargeLocalDatasourceImpl implements RechargeLocalDatasource {
         userId: userId,
         collegeId: collegeId,
         machineId: machineId,
-        amount: "",
-        signal: "",
+        amount: amount,
+        signal: signal,
       );
     } on LocalException catch (e) {
       throw LocalException(message: e.message);
@@ -87,8 +93,11 @@ class RechargeLocalDatasourceImpl implements RechargeLocalDatasource {
   }
 
   @override
-  Future<bool> checkInternetConnection() {
-    // TODO: implement checkInternetConnection
-    throw UnimplementedError();
+  Future<bool> checkInternetConnection() async {
+    try {
+      return await connection.hasInternetAccess;
+    } catch (e) {
+      throw LocalException(message: "Exception in Internet Connection.");
+    }
   }
 }

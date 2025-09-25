@@ -39,7 +39,7 @@ class AuthLocalDatasourceImpl implements AuthLocalDatasource {
       await box.put("college_id", response["college_id"]);
       return true;
     } catch (_) {
-      throw LocalException(message: "Exception in HIVE.");
+      throw LocalException(message: "Exception in JWT or HIVE.");
     }
   }
 

@@ -11,7 +11,6 @@ abstract interface class RechargeRemoteDatasource {
   Future<bool> deductAmountFromDatabase({
     required RechargeModel rechargeDetails,
   });
-  Future<bool> checkInternetConnection();
 }
 
 class RechargeRemoteDatasourceImpl implements RechargeRemoteDatasource {
@@ -40,20 +39,11 @@ class RechargeRemoteDatasourceImpl implements RechargeRemoteDatasource {
       if (jsonResponse.statusCode != 200) {
         throw ServerException(message: response["error"]);
       }
-      return response["message"];
+      return true;
     } on ServerException catch (e) {
       throw ServerException(message: e.message);
     } catch (_) {
       throw ServerException(message: "Exception in Server.");
-    }
-  }
-
-  @override
-  Future<bool> checkInternetConnection() async {
-    try {
-      return await connection.hasInternetAccess;
-    } catch (e) {
-      throw ServerException(message: "Exception in Internet Connection.");
     }
   }
 }

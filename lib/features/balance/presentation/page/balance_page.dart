@@ -17,7 +17,6 @@ class _BalancePageState extends State<BalancePage> {
   @override
   void initState() {
     super.initState();
-    // load balance immediately
     context.read<GetBalanceCubit>().getBalance();
   }
 

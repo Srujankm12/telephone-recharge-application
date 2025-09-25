@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:telephone_recharge_application/core/theme/app_colors.dart';
 import 'package:telephone_recharge_application/core/widgets/app_loading_widget.dart';
 import 'package:telephone_recharge_application/features/recharge_history/presentation/cubit/get_recharge_history_cubit.dart';
 import 'package:telephone_recharge_application/features/recharge_history/presentation/widgets/recharge_history_card.dart';
@@ -53,20 +52,9 @@ class _RechargeHistoryPageState extends State<RechargeHistoryPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(Icons.no_accounts_rounded, size: 80),
-                  SizedBox(height: 5),
                   Text(
                     state.message,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    "Try Again",
-                    style: Theme.of(
-                      context,
-                    ).textTheme.labelLarge?.copyWith(color: AppColors.grey),
+                    style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ],
               ),

@@ -16,8 +16,6 @@ class BalanceRepositoryImpl implements BalanceRepository {
         signal: signal,
       );
       return Right(response);
-    } on ServerException catch (e) {
-      return Left(Failure(message: e.message));
     } on LocalException catch (e) {
       return Left(Failure(message: e.message));
     } catch (e) {
