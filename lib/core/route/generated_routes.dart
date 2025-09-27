@@ -74,13 +74,23 @@ class GeneratedRoutes {
           ),
         );
       case initCardMode:
-        return MaterialPageRoute(builder: (context) => InitCardPage());
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => serviceLocator<InitCardCubit>(),
+            child: InitCardPage(),
+          ),
+        );
       case recharge:
-        return MaterialPageRoute(builder: (context) => RechargePage());
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => serviceLocator<RechargeCubit>(),
+            child: RechargePage(),
+          ),
+        );
       case changeMode:
         return MaterialPageRoute(builder: (context) => ChangeModePage());
-      case addPhoneNumbers:
-        return MaterialPageRoute(builder: (context) => AddPhoneNumberPage());
+      // case addPhoneNumbers:
+      //   return MaterialPageRoute(builder: (context) => AddPhoneNumberPage());
       case changePhoneNumbers:
         return MaterialPageRoute(builder: (context) => ChangePhoneNumberPage());
       default:

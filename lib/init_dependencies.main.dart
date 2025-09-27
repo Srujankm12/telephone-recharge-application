@@ -10,6 +10,7 @@ Future<void> init() async {
   await _initInternetConnectivity();
   _initAuth();
   _initCardBalance();
+  _initRecharge();
   _initRechargeHistory();
   _initDevicesListCubit();
   _initCardMode();
@@ -170,5 +171,34 @@ void _initCardMode() async {
     )
     ..registerFactory<InitCardCubit>(
       () => InitCardCubit(initCardUsecase: serviceLocator()),
+    );
+}
+
+void _initRecharge() {
+  serviceLocator
+    ..registerLazySingleton<RechargeLocalDatasource>(
+      () => RechargeLocalDatasourceImpl(
+        bluetoothManager: serviceLocator(),
+        box: serviceLocator(),
+        connection: serviceLocator(),
+      ),
+    )
+    ..registerLazySingleton<RechargeRemoteDatasource>(
+      () => RechargeRemoteDatasourceImpl(
+        client: serviceLocator(),
+        connection: serviceLocator(),
+      ),
+    )
+    ..registerLazySingleton<RechargeRepository>(
+      () => RechargeRepositoryImpl(
+        rechargeLocalDatasource: serviceLocator(),
+        rechargeRemoteDatasource: serviceLocator(),
+      ),
+    )
+    ..registerLazySingleton<RechargeUsecase>(
+      () => RechargeUsecase(rechargeRepository: serviceLocator()),
+    )
+    ..registerFactory<RechargeCubit>(
+      () => RechargeCubit(rechargeUsecase: serviceLocator()),
     );
 }

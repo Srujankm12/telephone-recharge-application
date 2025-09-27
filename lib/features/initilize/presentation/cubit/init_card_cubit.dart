@@ -15,6 +15,7 @@ class InitCardCubit extends Cubit<InitCardState> {
     required String mode,
     required String amount,
   }) async {
+    emit(IntiCardLoadingState());
     final res = await _initCardUsecase(
       InitCardParams(signal: signal, amount: amount, mode: mode),
     );

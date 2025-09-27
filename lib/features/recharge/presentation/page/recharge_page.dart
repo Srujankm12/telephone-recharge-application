@@ -56,6 +56,83 @@ class _RechargePageState extends State<RechargePage> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
+                                    _amountController.clear();
+                                    Navigator.pop(context);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.white,
+                                  ),
+                                  child: Text(
+                                    "Cancel",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _amountController.clear();
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    "OK",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(
+                                          color: AppColors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+          if (state is RechargeFailureState) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return Dialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: SizedBox(
+                      height: 126,
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment(-1, 0),
+                            child: Text(
+                              "Recharge Failed",
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Align(
+                            alignment: Alignment(-1, 0),
+                            child: Text(state.message),
+                          ),
+                          SizedBox(height: 20),
+                          Align(
+                            alignment: Alignment(1, 0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
                                     Navigator.pop(context);
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -97,7 +174,6 @@ class _RechargePageState extends State<RechargePage> {
             );
             _amountController.clear();
           }
-          if (state is RechargeFailureState) {}
         },
         child: Center(
           child: Column(
@@ -136,15 +212,21 @@ class _RechargePageState extends State<RechargePage> {
       floatingActionButton: BlocBuilder<RechargeCubit, RechargeState>(
         builder: (context, state) {
           return FloatingActionButton(
-            onPressed: state is RechargeLoadingState ? null : () {},
+            onPressed: state is RechargeLoadingState
+                ? null
+                : () {
+                    context.read<RechargeCubit>().rechargeCard(
+                      amount: _amountController.text,
+                    );
+                  },
             child: state is RechargeLoadingState
                 ? Center(
                     child: SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
-                        color: AppColors.blue,
-                        strokeWidth: 5,
+                        color: AppColors.white,
+                        strokeWidth: 2,
                         strokeCap: StrokeCap.round,
                       ),
                     ),

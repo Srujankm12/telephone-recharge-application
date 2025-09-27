@@ -12,11 +12,11 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  // @override
-  // void initState() {
-  //   context.read<AutoLoginCubit>().autoLogin();
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    context.read<AutoLoginCubit>().autoLogin();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +35,8 @@ class _LandingPageState extends State<LandingPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset(Images.companyLogo, width: 180, height: 180),
-              SizedBox(height: 5),
+              Image.asset(Images.companyLogo, width: 180),
+              SizedBox(height: 10),
               Text(
                 "Vithsutra Technologies Pvt Ltd",
                 style: Theme.of(
