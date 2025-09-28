@@ -31,6 +31,13 @@ import 'package:telephone_recharge_application/features/initilize/data/repositor
 import 'package:telephone_recharge_application/features/initilize/domain/repository/init_card_repository.dart';
 import 'package:telephone_recharge_application/features/initilize/domain/usecases/init_card_usecase.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/cubit/init_card_cubit.dart';
+import 'package:telephone_recharge_application/features/phone_number/data/datasources/phone_number_local_datasource.dart';
+import 'package:telephone_recharge_application/features/phone_number/data/repository/phone_number_repository_impl.dart';
+import 'package:telephone_recharge_application/features/phone_number/domain/repository/phone_number_repository.dart';
+import 'package:telephone_recharge_application/features/phone_number/domain/usecases/add_phone_number_usecase.dart';
+import 'package:telephone_recharge_application/features/phone_number/domain/usecases/get_phone_number_usecase.dart';
+import 'package:telephone_recharge_application/features/phone_number/presentation/cubit/add_phone_numbers_cubit.dart';
+import 'package:telephone_recharge_application/features/phone_number/presentation/cubit/get_phone_number_cubit.dart';
 import 'package:telephone_recharge_application/features/recharge/data/datasources/recharge_local_datasource.dart';
 import 'package:telephone_recharge_application/features/recharge/data/datasources/recharge_remote_datasource.dart';
 import 'package:telephone_recharge_application/features/recharge/data/repository/recharge_repository_impl.dart';

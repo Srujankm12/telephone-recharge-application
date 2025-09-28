@@ -72,6 +72,7 @@ class PhoneNumberLocalDatasourceImpl implements PhoneNumberLocalDatasource {
         charUuid: Guid(BluetoothConstants.charUuid),
         payload: {"signal": signal},
       );
+      print(response);
       if (response == null) {
         throw LocalException(message: "No Response from Device.");
       }
@@ -84,10 +85,14 @@ class PhoneNumberLocalDatasourceImpl implements PhoneNumberLocalDatasource {
       if (response["error_status"] == "3") {
         throw LocalException(message: "Card Write Failed.");
       }
-      return response["phone_numbers"];
+      final responseString = (response["phone_numbers"] as List<dynamic>)
+          .map((e) => e.toString())
+          .toList();
+      return responseString;
     } on LocalException catch (e) {
       throw LocalException(message: e.message);
-    } catch (_) {
+    } catch (e) {
+      print(e.toString());
       throw LocalException(message: "Exception in BLE.");
     }
   }

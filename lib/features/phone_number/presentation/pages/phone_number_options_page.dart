@@ -15,7 +15,7 @@ class PhoneNumberOptionsPage extends StatelessWidget {
           children: [
             PhoneNumberOptionCard(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, "");
+                Navigator.pushReplacementNamed(context, "/addPhoneNumbers");
               },
               cardText: "Add New Numbers",
               cardIcon: Icons.add_card_rounded,
@@ -23,7 +23,7 @@ class PhoneNumberOptionsPage extends StatelessWidget {
             SizedBox(height: 40),
             PhoneNumberOptionCard(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, "");
+                Navigator.pushReplacementNamed(context, "/changePhoneNumbers");
               },
               cardText: "Update Numbers",
               cardIcon: Icons.change_circle_rounded,

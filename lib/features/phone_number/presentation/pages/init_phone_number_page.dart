@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:telephone_recharge_application/core/theme/app_colors.dart';
+import 'package:telephone_recharge_application/core/widgets/app_snackbar.dart';
+import 'package:telephone_recharge_application/features/phone_number/presentation/cubit/add_phone_numbers_cubit.dart';
 import 'package:telephone_recharge_application/features/phone_number/presentation/widgets/phone_number_card.dart';
 import 'package:telephone_recharge_application/features/phone_number/presentation/widgets/phone_number_submit_button.dart';
 import 'package:telephone_recharge_application/features/phone_number/presentation/widgets/phone_number_text_field.dart';
@@ -44,83 +47,105 @@ class _InitPhoneNumberPageState extends State<InitPhoneNumberPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Add Phone Number")),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(height: 10),
-                  Text(
-                    "Enter the Phone Numbers Below.",
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    "Please Enter 3 Valid Phone Numbers.",
-                    style: Theme.of(
-                      context,
-                    ).textTheme.labelLarge?.copyWith(color: AppColors.grey),
-                  ),
-                  SizedBox(height: 20),
-                  PhoneNumberTextField(
-                    hintText: "Phone Number",
-                    leading: Icons.phone_iphone_rounded,
-                    onPressed: _phoneNumbers.length == 3
-                        ? null
-                        : () {
-                            _addPhoneNumbersToList(
-                              phoneNumber: _phoneNumberController.text,
-                            );
-                            _clearPhoneNumberTextField();
-                          },
-                    validator: _phoneNumberValidator,
-                    controller: _phoneNumberController,
-                  ),
-                  SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment(-1, 0),
-                    child: Text(
-                      "Phone Numbers",
+    return BlocListener<AddPhoneNumbersCubit, AddPhoneNumbersState>(
+      listener: (context, state) {
+        if (state is AddPhoneNumbersSuccessState) {
+          AppSnackbar.showSnackBar(state.message, context);
+          Navigator.pop(context);
+        }
+        if (state is AddPhoneNumbersFailureState) {
+          AppSnackbar.showSnackBar(state.message, context);
+          Navigator.pop(context);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(title: Text("Add Phone Number")),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 10),
+                    Text(
+                      "Enter the Phone Numbers Below.",
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: AppColors.black,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ),
-                  SizedBox(height: 5),
-                  Align(
-                    alignment: Alignment(-1, 0),
-                    child: Wrap(
-                      children: List.generate(_phoneNumbers.length, (index) {
-                        return PhoneNumberCard(
-                          phoneNumber: _phoneNumbers[index],
-                          onPressed: () {
-                            _removePhoneNumberFromList(index: index);
-                          },
-                        );
-                      }),
+                    Text(
+                      "Please Enter 3 Valid Phone Numbers.",
+                      style: Theme.of(
+                        context,
+                      ).textTheme.labelLarge?.copyWith(color: AppColors.grey),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 20),
+                    PhoneNumberTextField(
+                      hintText: "Phone Number",
+                      leading: Icons.phone_iphone_rounded,
+                      onPressed: _phoneNumbers.length == 3
+                          ? null
+                          : () {
+                              if (_formKey.currentState!.validate()) {
+                                _addPhoneNumbersToList(
+                                  phoneNumber: _phoneNumberController.text,
+                                );
+                                _clearPhoneNumberTextField();
+                              }
+                            },
+                      validator: _phoneNumberValidator,
+                      controller: _phoneNumberController,
+                    ),
+                    SizedBox(height: 10),
+                    Align(
+                      alignment: Alignment(-1, 0),
+                      child: Text(
+                        "Phone Numbers",
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: AppColors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Align(
+                      alignment: Alignment(-1, 0),
+                      child: Wrap(
+                        children: List.generate(_phoneNumbers.length, (index) {
+                          return PhoneNumberCard(
+                            phoneNumber: _phoneNumbers[index],
+                            onPressed: () {
+                              _removePhoneNumberFromList(index: index);
+                            },
+                          );
+                        }),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-      bottomSheet: PhoneNumberSubmitButton(
-        onPressed: _phoneNumbers.length == 3
-            ? () {
-                if (_formKey.currentState!.validate()) {}
-              }
-            : null,
+        bottomSheet: BlocBuilder<AddPhoneNumbersCubit, AddPhoneNumbersState>(
+          builder: (context, state) {
+            return PhoneNumberSubmitButton(
+              isLoading: state is AddPhoneNumbersLoadingState,
+              onPressed: _phoneNumbers.length == 3
+                  ? () {
+                      context.read<AddPhoneNumbersCubit>().addPhoneNumbers(
+                        signal: "3",
+                        phoneNumbers: _phoneNumbers,
+                      );
+                    }
+                  : null,
+            );
+          },
+        ),
       ),
     );
   }

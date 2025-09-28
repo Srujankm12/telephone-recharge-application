@@ -13,7 +13,11 @@ import 'package:telephone_recharge_application/features/initilize/presentation/c
 import 'package:telephone_recharge_application/features/initilize/presentation/pages/init_card_page.dart';
 import 'package:telephone_recharge_application/features/mode/presentation/page/change_mode_page.dart';
 import 'package:telephone_recharge_application/features/options/presentation/pages/options_page.dart';
+import 'package:telephone_recharge_application/features/phone_number/presentation/cubit/add_phone_numbers_cubit.dart';
+import 'package:telephone_recharge_application/features/phone_number/presentation/cubit/get_phone_number_cubit.dart';
 import 'package:telephone_recharge_application/features/phone_number/presentation/pages/change_phone_number_page.dart';
+import 'package:telephone_recharge_application/features/phone_number/presentation/pages/init_phone_number_page.dart';
+import 'package:telephone_recharge_application/features/phone_number/presentation/pages/phone_number_options_page.dart';
 import 'package:telephone_recharge_application/features/recharge/presentation/cubit/recharge_cubit.dart';
 import 'package:telephone_recharge_application/features/recharge/presentation/page/recharge_page.dart';
 import 'package:telephone_recharge_application/features/recharge_history/presentation/cubit/get_recharge_history_cubit.dart';

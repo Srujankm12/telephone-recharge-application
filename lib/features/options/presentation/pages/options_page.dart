@@ -92,7 +92,7 @@ class _OptionsPageState extends State<OptionsPage> {
                     title: "Phone Number",
                     icon: Icons.phone_rounded,
                     onPressed: () {
-                      Navigator.pushNamed(context, "/");
+                      Navigator.pushNamed(context, "/phoneNumberOptions");
                     },
                   ),
                 ],

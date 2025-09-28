@@ -13,6 +13,7 @@ class GeneratedRoutes {
     const String initCardMode = "/initCardMode";
     const String addPhoneNumbers = "/addPhoneNumbers";
     const String changePhoneNumbers = "/changePhoneNumbers";
+    const String phoneNumberOptions = "/phoneNumberOptions";
 
     final args = settings.arguments;
     switch (settings.name) {
@@ -89,10 +90,31 @@ class GeneratedRoutes {
         );
       case changeMode:
         return MaterialPageRoute(builder: (context) => ChangeModePage());
-      // case addPhoneNumbers:
-      //   return MaterialPageRoute(builder: (context) => AddPhoneNumberPage());
       case changePhoneNumbers:
-        return MaterialPageRoute(builder: (context) => ChangePhoneNumberPage());
+        return MaterialPageRoute(
+          builder: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => serviceLocator<AddPhoneNumbersCubit>(),
+              ),
+              BlocProvider(
+                create: (context) => serviceLocator<GetPhoneNumberCubit>(),
+              ),
+            ],
+            child: ChangePhoneNumberPage(),
+          ),
+        );
+      case addPhoneNumbers:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => serviceLocator<AddPhoneNumbersCubit>(),
+            child: InitPhoneNumberPage(),
+          ),
+        );
+      case phoneNumberOptions:
+        return MaterialPageRoute(
+          builder: (context) => PhoneNumberOptionsPage(),
+        );
       default:
         return null;
     }

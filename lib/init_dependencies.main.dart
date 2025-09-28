@@ -11,6 +11,7 @@ Future<void> init() async {
   _initAuth();
   _initCardBalance();
   _initRecharge();
+  _initPhoneNumbers();
   _initRechargeHistory();
   _initDevicesListCubit();
   _initCardMode();
@@ -200,5 +201,29 @@ void _initRecharge() {
     )
     ..registerFactory<RechargeCubit>(
       () => RechargeCubit(rechargeUsecase: serviceLocator()),
+    );
+}
+
+void _initPhoneNumbers() {
+  serviceLocator
+    ..registerLazySingleton<PhoneNumberLocalDatasource>(
+      () => PhoneNumberLocalDatasourceImpl(bluetoothManager: serviceLocator()),
+    )
+    ..registerLazySingleton<PhoneNumberRepository>(
+      () => PhoneNumberRepositoryImpl(
+        phoneNumberLocalDatasource: serviceLocator(),
+      ),
+    )
+    ..registerLazySingleton<AddPhoneNumberUsecase>(
+      () => AddPhoneNumberUsecase(phoneNumberRepository: serviceLocator()),
+    )
+    ..registerLazySingleton<GetPhoneNumberUsecase>(
+      () => GetPhoneNumberUsecase(phoneNumberRepository: serviceLocator()),
+    )
+    ..registerFactory<AddPhoneNumbersCubit>(
+      () => AddPhoneNumbersCubit(addPhoneNumberUsecase: serviceLocator()),
+    )
+    ..registerFactory<GetPhoneNumberCubit>(
+      () => GetPhoneNumberCubit(getPhoneNumberUsecase: serviceLocator()),
     );
 }

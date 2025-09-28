@@ -8,6 +8,6 @@ class GetCardModeUsecase implements Usecase<String, String> {
   GetCardModeUsecase({required this.phoneNumberRepository});
   @override
   Future<Either<Failure, String>> call(String params) async {
-    return 
+    return await phoneNumberRepository.checkCardMode(signal: params);
   }
 }
