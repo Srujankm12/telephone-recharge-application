@@ -220,10 +220,16 @@ void _initPhoneNumbers() {
     ..registerLazySingleton<GetPhoneNumberUsecase>(
       () => GetPhoneNumberUsecase(phoneNumberRepository: serviceLocator()),
     )
+    ..registerLazySingleton<GetCardModeUsecase>(
+      () => GetCardModeUsecase(phoneNumberRepository: serviceLocator()),
+    )
     ..registerFactory<AddPhoneNumbersCubit>(
       () => AddPhoneNumbersCubit(addPhoneNumberUsecase: serviceLocator()),
     )
     ..registerFactory<GetPhoneNumberCubit>(
       () => GetPhoneNumberCubit(getPhoneNumberUsecase: serviceLocator()),
+    )
+    ..registerFactory<CheckCardModeCubit>(
+      () => CheckCardModeCubit(getCardModeUsecase: serviceLocator()),
     );
 }

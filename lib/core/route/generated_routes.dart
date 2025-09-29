@@ -113,7 +113,10 @@ class GeneratedRoutes {
         );
       case phoneNumberOptions:
         return MaterialPageRoute(
-          builder: (context) => PhoneNumberOptionsPage(),
+          builder: (context) => BlocProvider(
+            create: (context) => serviceLocator<CheckCardModeCubit>(),
+            child: PhoneNumberOptionsPage(),
+          ),
         );
       default:
         return null;

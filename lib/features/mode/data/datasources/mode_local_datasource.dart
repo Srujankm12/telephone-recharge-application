@@ -3,22 +3,18 @@ import 'package:telephone_recharge_application/core/constants/bluetooth_constant
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
 import 'package:telephone_recharge_application/core/utils/telephone_bluetooth_manager.dart';
 
-abstract interface class PhoneNumberLocalDatasource {
-  Future<bool> addPhoneNumber({
-    required String signal,
-    required List<String> phoneNumbers,
-  });
-  Future<List<String>> getExistingPhoneNumbers({required String signal});
+abstract interface class ModeLocalDatasource {
   Future<String> checkCardMode({required String signal});
+  Future<String> changeCardMode({required String signal, required String mode});
 }
 
-class PhoneNumberLocalDatasourceImpl implements PhoneNumberLocalDatasource {
+class ModeLocalDatasourceImpl implements ModeLocalDatasource {
   final TelephoneBluetoothManager bluetoothManager;
-  PhoneNumberLocalDatasourceImpl({required this.bluetoothManager});
+  ModeLocalDatasourceImpl({required this.bluetoothManager});
   @override
-  Future<bool> addPhoneNumber({
+  Future<String> changeCardMode({
     required String signal,
-    required List<String> phoneNumbers,
+    required String mode,
   }) async {
     try {
       if (!await bluetoothManager.checkBluetoothState()) {
@@ -33,7 +29,7 @@ class PhoneNumberLocalDatasourceImpl implements PhoneNumberLocalDatasource {
       final response = await bluetoothManager.writeJsonAndWaitForResponse(
         service: service,
         charUuid: Guid(BluetoothConstants.charUuid),
-        payload: {"signal": signal, "phone_numbers": phoneNumbers},
+        payload: {"signal": signal, "mode": mode},
       );
       if (response == null) {
         throw LocalException(message: "No Response from Device.");
@@ -47,50 +43,10 @@ class PhoneNumberLocalDatasourceImpl implements PhoneNumberLocalDatasource {
       if (response["error_status"] == "3") {
         throw LocalException(message: "Card Write Failed.");
       }
-      return true;
+      return response["mode"];
     } on LocalException catch (e) {
       throw LocalException(message: e.message);
     } catch (_) {
-      throw LocalException(message: "Exception in BLE.");
-    }
-  }
-
-  @override
-  Future<List<String>> getExistingPhoneNumbers({required String signal}) async {
-    try {
-      if (!await bluetoothManager.checkBluetoothState()) {
-        throw LocalException(message: "Bluetooth is Turned OFF.");
-      }
-      if (!await bluetoothManager.isConnected()) {
-        throw LocalException(message: "Disconnected from Device.");
-      }
-      final service = await bluetoothManager.getTargetService(
-        Guid(BluetoothConstants.serviceUuid),
-      );
-      final response = await bluetoothManager.writeJsonAndWaitForResponse(
-        service: service,
-        charUuid: Guid(BluetoothConstants.charUuid),
-        payload: {"signal": signal},
-      );
-      if (response == null) {
-        throw LocalException(message: "No Response from Device.");
-      }
-      if (response["error_status"] == "1") {
-        throw LocalException(message: "Card Not Found.");
-      }
-      if (response["error_status"] == "2") {
-        throw LocalException(message: "Card Authentication Failed.");
-      }
-      if (response["error_status"] == "3") {
-        throw LocalException(message: "Card Write Failed.");
-      }
-      final responseString = (response["phone_numbers"] as List<dynamic>)
-          .map((e) => e.toString())
-          .toList();
-      return responseString;
-    } on LocalException catch (e) {
-      throw LocalException(message: e.message);
-    } catch (e) {
       throw LocalException(message: "Exception in BLE.");
     }
   }
@@ -112,7 +68,6 @@ class PhoneNumberLocalDatasourceImpl implements PhoneNumberLocalDatasource {
         charUuid: Guid(BluetoothConstants.charUuid),
         payload: {"signal": signal},
       );
-      print(response);
       if (response == null) {
         throw LocalException(message: "No Response from Device.");
       }

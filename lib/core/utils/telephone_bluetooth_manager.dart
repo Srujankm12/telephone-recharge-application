@@ -69,6 +69,54 @@ class TelephoneBluetoothManager {
     await FlutterBluePlus.turnOn();
   }
 
+  // Future<Map<String, dynamic>?> writeJsonAndWaitForResponse({
+  //   required BluetoothService service,
+  //   required Guid charUuid,
+  //   required Map<String, dynamic> payload,
+  //   Duration timeout = const Duration(seconds: 5),
+  // }) async {
+  //   try {
+  //     final characteristic = service.characteristics.firstWhere(
+  //       (c) =>
+  //           c.uuid == charUuid && (c.properties.write || c.properties.notify),
+  //     );
+  //     await characteristic.setNotifyValue(true);
+  //     final completer = Completer<Map<String, dynamic>?>();
+  //     final requestJson = jsonEncode(payload);
+  //     final sub = characteristic.lastValueStream.listen((data) {
+  //       try {
+  //         if (data.isEmpty) return;
+
+  //         final responseStr = utf8.decode(data);
+
+  //         if (responseStr.trim().isEmpty) return;
+
+  //         final responseJson = jsonDecode(responseStr) as Map<String, dynamic>;
+
+  //         if (responseStr == requestJson) return;
+
+  //         if (!completer.isCompleted) {
+  //           completer.complete(responseJson);
+  //         }
+  //       } catch (e) {
+  //         if (!completer.isCompleted) {
+  //           completer.completeError(Exception({"message": e.toString()}));
+  //         }
+  //       }
+  //     });
+  //     final dataToSend = utf8.encode(requestJson);
+  //     await characteristic.write(dataToSend, withoutResponse: false);
+  //     final result = await completer.future.timeout(
+  //       timeout,
+  //       onTimeout: () => null,
+  //     );
+  //     await sub.cancel();
+  //     return result;
+  //   } catch (e) {
+  //     throw Exception({"message": "exception in BLE communication"});
+  //   }
+  // }
+
   Future<Map<String, dynamic>?> writeJsonAndWaitForResponse({
     required BluetoothService service,
     required Guid charUuid,
@@ -78,17 +126,23 @@ class TelephoneBluetoothManager {
     try {
       final characteristic = service.characteristics.firstWhere(
         (c) =>
-            c.uuid == charUuid && (c.properties.write || c.properties.notify),
+            c.uuid == charUuid &&
+            (c.properties.write ||
+                c.properties.notify ||
+                c.properties.indicate),
       );
-      await characteristic.setNotifyValue(true);
+      if (characteristic.properties.notify ||
+          characteristic.properties.indicate) {
+        await characteristic.setNotifyValue(true);
+      }
       final completer = Completer<Map<String, dynamic>?>();
       final requestJson = jsonEncode(payload);
-      final sub = characteristic.lastValueStream.listen((data) {
+      final dataToSend = utf8.encode(requestJson);
+      final sub = characteristic.onValueReceived.listen((data) {
         try {
           if (data.isEmpty) return;
 
           final responseStr = utf8.decode(data);
-
           if (responseStr.trim().isEmpty) return;
 
           final responseJson = jsonDecode(responseStr) as Map<String, dynamic>;
@@ -104,16 +158,21 @@ class TelephoneBluetoothManager {
           }
         }
       });
-      final dataToSend = utf8.encode(requestJson);
+
       await characteristic.write(dataToSend, withoutResponse: false);
+
       final result = await completer.future.timeout(
         timeout,
         onTimeout: () => null,
       );
+
       await sub.cancel();
       return result;
     } catch (e) {
-      throw Exception({"message": "exception in BLE communication"});
+      throw Exception({
+        "message": "exception in BLE communication",
+        "error": e.toString(),
+      });
     }
   }
 }

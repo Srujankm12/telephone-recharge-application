@@ -3,7 +3,7 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 import 'package:telephone_recharge_application/core/errors/exceptions.dart';
 
 abstract interface class RechargeHistoryLocalDatasource {
-  Future<String> getUserId();
+  Future<String> getMachineId();
   Future<bool> checkInternetConnection();
 }
 
@@ -16,13 +16,13 @@ class RechargeHistoryLocalDatasourceImpl
     required this.connection,
   });
   @override
-  Future<String> getUserId() async {
+  Future<String> getMachineId() async {
     try {
-      final String? userId = box.get("user_id");
-      if (userId == null) {
-        throw LocalException(message: "User ID Not Found.");
+      final String? machineId = box.get("machine_id");
+      if (machineId == null) {
+        throw LocalException(message: "Machine ID Not Found.");
       }
-      return userId;
+      return machineId;
     } on LocalException catch (e) {
       throw LocalException(message: e.message);
     } catch (_) {

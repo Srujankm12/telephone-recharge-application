@@ -38,6 +38,7 @@ class PhoneNumberRepositoryImpl implements PhoneNumberRepository {
       final response = await phoneNumberLocalDatasource.checkCardMode(
         signal: signal,
       );
+      print(response);
       return Right(response);
     } on LocalException catch (e) {
       return Left(Failure(message: e.message));

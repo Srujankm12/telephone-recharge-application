@@ -36,6 +36,7 @@ class _RechargeHistoryPageState extends State<RechargeHistoryPage> {
         builder: (context, state) {
           if (state is GetRechargeHistorySuccessState) {
             return ListView.builder(
+              reverse: true,
               itemBuilder: (context, index) {
                 return RechargeHistoryCard(
                   title: state.rechargeHistory[index].date,

@@ -21,10 +21,11 @@ class RechargeHistoryRepositoryImpl implements RechargeHistoryRepository {
       if (!await rechargeHistoryLocalDatasource.checkInternetConnection()) {
         throw LocalException(message: "No Internet Connection.");
       }
-      final String userId = await rechargeHistoryLocalDatasource.getUserId();
+      final String machineId = await rechargeHistoryLocalDatasource
+          .getMachineId();
       final List<RechargeHistoryModel> response =
           await rechargeHistoryRemoteDatasource.getRechargeHistory(
-            userId: userId,
+            userId: machineId,
           );
       return Right(response);
     } on ServerException catch (e) {
