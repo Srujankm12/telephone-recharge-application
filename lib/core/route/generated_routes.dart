@@ -89,7 +89,19 @@ class GeneratedRoutes {
           ),
         );
       case changeMode:
-        return MaterialPageRoute(builder: (context) => ChangeModePage());
+        return MaterialPageRoute(
+          builder: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => serviceLocator<GetCardModeCubit>(),
+              ),
+              BlocProvider(
+                create: (context) => serviceLocator<ChangeCardModeCubit>(),
+              ),
+            ],
+            child: ChangeModePage(),
+          ),
+        );
       case changePhoneNumbers:
         return MaterialPageRoute(
           builder: (context) => MultiBlocProvider(

@@ -43,7 +43,7 @@ class ModeLocalDatasourceImpl implements ModeLocalDatasource {
       if (response["error_status"] == "3") {
         throw LocalException(message: "Card Write Failed.");
       }
-      return response["mode"];
+      return "Card Mode Changed Successfully.";
     } on LocalException catch (e) {
       throw LocalException(message: e.message);
     } catch (_) {

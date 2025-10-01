@@ -27,7 +27,7 @@ class CardModeSwitchButton extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        cardMode == "1"
+                        cardMode == "2"
                             ? Icons.call_rounded
                             : Icons.call_end_rounded,
                         size: 50,
@@ -35,7 +35,7 @@ class CardModeSwitchButton extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        cardMode == "1"
+                        cardMode == "2"
                             ? "Switch to Free to Dial"
                             : "Switch to Restricted Mode",
                         style: Theme.of(context).textTheme.titleLarge,

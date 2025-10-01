@@ -11,6 +11,8 @@ import 'package:telephone_recharge_application/features/devices/presentation/cub
 import 'package:telephone_recharge_application/features/devices/presentation/pages/device_page.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/cubit/init_card_cubit.dart';
 import 'package:telephone_recharge_application/features/initilize/presentation/pages/init_card_page.dart';
+import 'package:telephone_recharge_application/features/mode/presentation/cubit/change_card_mode_cubit.dart';
+import 'package:telephone_recharge_application/features/mode/presentation/cubit/get_card_mode_cubit.dart';
 import 'package:telephone_recharge_application/features/mode/presentation/page/change_mode_page.dart';
 import 'package:telephone_recharge_application/features/options/presentation/pages/options_page.dart';
 import 'package:telephone_recharge_application/features/phone_number/presentation/cubit/add_phone_numbers_cubit.dart';

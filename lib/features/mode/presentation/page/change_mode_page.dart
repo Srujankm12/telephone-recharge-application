@@ -17,6 +17,12 @@ class ChangeModePage extends StatefulWidget {
 
 class _ChangeModePageState extends State<ChangeModePage> {
   @override
+  void initState() {
+    context.read<GetCardModeCubit>().checkCardMode();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [

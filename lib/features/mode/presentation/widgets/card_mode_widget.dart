@@ -11,13 +11,13 @@ class CardModeWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
-          cardMode == "1" ? Icons.call_end_rounded : Icons.call_rounded,
+          cardMode == "2" ? Icons.call_end_rounded : Icons.call_rounded,
           size: 50,
           color: AppColors.blue,
         ),
         SizedBox(height: 5),
         Text(
-          cardMode == "1" ? "Restricted" : "Free to Dial",
+          cardMode == "2" ? "Restricted" : "Free to Dial",
           style: Theme.of(
             context,
           ).textTheme.headlineMedium?.copyWith(color: AppColors.blue),
