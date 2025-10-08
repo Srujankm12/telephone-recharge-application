@@ -2,7 +2,7 @@ import 'package:telephone_recharge_application/features/recharge_history/domain/
 
 class RechargeHistoryModel extends RechargeHistoryEntity {
   RechargeHistoryModel({
-    required super.userId,
+    required super.machineId,
     required super.date,
     required super.rechargeAmount,
     required super.time,
@@ -10,7 +10,7 @@ class RechargeHistoryModel extends RechargeHistoryEntity {
 
   factory RechargeHistoryModel.fromJson(Map<String, dynamic> json) {
     return RechargeHistoryModel(
-      userId: json["user_id"],
+      machineId: json["machine_id"],
       date: json["date"],
       rechargeAmount: json["recharge_amount"],
       time: json["time"],

@@ -25,7 +25,7 @@ class RechargeHistoryRepositoryImpl implements RechargeHistoryRepository {
           .getMachineId();
       final List<RechargeHistoryModel> response =
           await rechargeHistoryRemoteDatasource.getRechargeHistory(
-            userId: machineId,
+            machineId: machineId,
           );
       return Right(response);
     } on ServerException catch (e) {

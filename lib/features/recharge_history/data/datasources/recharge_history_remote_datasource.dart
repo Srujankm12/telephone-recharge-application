@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 abstract interface class RechargeHistoryRemoteDatasource {
   Future<List<RechargeHistoryModel>> getRechargeHistory({
-    required String userId,
+    required String machineId,
   });
 }
 
@@ -18,11 +18,11 @@ class RechargeHistoryRemoteDatasourceImpl
   RechargeHistoryRemoteDatasourceImpl({required this.client});
   @override
   Future<List<RechargeHistoryModel>> getRechargeHistory({
-    required String userId,
+    required String machineId,
   }) async {
     try {
       final jsonResponse = await client.get(
-        Uri.parse("${HttpRoutes.rechargeHistory}/$userId"),
+        Uri.parse("${HttpRoutes.rechargeHistory}/$machineId"),
         headers: HttpConstants.httpHeaders,
       );
       final response = jsonDecode(jsonResponse.body);
